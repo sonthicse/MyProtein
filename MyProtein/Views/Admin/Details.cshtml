@@ -1,68 +1,55 @@
 ﻿@{
-    ViewData["Title"] = "Add Product";
+    ViewData["Title"] = "Chi tiết sản phẩm";
     Layout = "AdminLayout";
+    var variants = Model.ProductVariants;
 }
 
 @model MyProtein.Models.Product
+@using System.Linq
 
-@section Styles {
-    <link href="~/phoenix/vendors/dropzone/dropzone.css" rel="stylesheet">
-    <link href="~/phoenix/vendors/choices/choices.min.css" rel="stylesheet">
-    <link href="~/phoenix/vendors/flatpickr/flatpickr.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" id="mce-u0" href="~/phoenix/vendors/tinymce/skins/ui/oxide/skin.min.css">
-}
-
-<form class="mb-9" asp-action="Create" method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
-
+<div class="mb-9">
     <div class="row g-3 flex-between-end mb-5">
         <div class="col-auto">
-            <h2 class="mb-2">Thêm sản phẩm mới</h2>
-            <h5 class="text-body-tertiary fw-semibold">Orders placed across your store</h5>
+            <h2 class="mb-2">Chi tiết sản phẩm</h2>
+            <h5 class="text-body-tertiary fw-semibold">Thông tin sản phẩm hiện tại</h5>
         </div>
         <div class="col-auto">
-            <a class="btn btn-phoenix-secondary me-2 mb-2 mb-sm-0" asp-action="Products">Hủy</a>
-            <button class="btn btn-primary mb-2 mb-sm-0" type="submit">Lưu</button>
+            <a class="btn btn-phoenix-secondary me-2 mb-2 mb-sm-0" asp-action="Products">Quay lại</a>
+            <a class="btn btn-primary mb-2 mb-sm-0" asp-action="Edit" asp-route-id="@Model.ProductId">Chỉnh sửa</a>
         </div>
     </div>
     <div class="row g-5">
         <div class="col-12 col-xl-8">
             <!-- Nhập SKU -->
             <h4 class="mb-3">SKU</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write SKU here..." asp-for="Sku" />
+            <input class="form-control form-control-lg mb-5" type="text" asp-for="Sku" readonly />
             <span asp-validation-for="Sku" class="text-danger"></span>
             <!-- Nhập Name -->
             <h4 class="mb-3">Tên sản phẩm</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write title here..." asp-for="Name" />
+            <input class="form-control form-control-lg mb-5" type="text" asp-for="Name" readonly />
             <span asp-validation-for="Name" class="text-danger"></span>
             <!-- Nhập Description -->
             <div class="mb-6">
                 <h4 class="mb-3">Mô tả</h4>
-                <textarea class="tinymce" asp-for="Description" data-tinymce='{"height":"15rem","placeholder":"Write a description here..."}'></textarea>
+                <textarea class="form-control form-control-lg mb-5" asp-for="Description" readonly rows="6"></textarea>
             </div>
             <!-- Nhập hình ảnh -->
             <h4 class="mb-3">Hình ảnh</h4>
-            <div class="dropzone dropzone-multiple p-0 mb-5" id="product-images-dropzone">
-                <div class="fallback">
-                    <input class="form-control" name="files" type="file" multiple="multiple" />
-                </div>
-                <div class="dz-preview d-flex flex-wrap">
-                    <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center position-relative me-2 mb-2" style="height:80px;width:80px;">
-                        <img class="dz-image" src="~/phoenix/assets/img/products/23.png" alt="..." data-dz-thumbnail="data-dz-thumbnail" />
-                        <a class="dz-remove text-body-quaternary" href="#!" data-dz-remove="data-dz-remove">
-                            <span data-feather="x"></span>
-                        </a>
-                    </div>
-                </div>
-                <div class="dz-message text-body-tertiary text-opacity-85" data-dz-message="data-dz-message">
-                    Drag your photo here
-                    <span class="text-body-secondary px-1">or</span>
-                    <button class="btn btn-link p-0" type="button">Browse from device</button>
-                    <br />
-                    <img class="mt-3 me-2" src="~/phoenix/assets/img/icons/image-icon.png" width="40" alt="" />
-                </div>
+            <div class="d-flex flex-wrap gap-2 mb-5">
+                @if (Model.ProductImages != null && Model.ProductImages.Any())
+                {
+                    foreach (var image in Model.ProductImages)
+                    {
+                        <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center" style="height:80px;width:80px;">
+                            <img class="img-fluid" src="@image.ImageUrl" alt="@image.AltText" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <span class="text-body-secondary">Không có hình ảnh cho sản phẩm này.</span>
+                }
             </div>
-            <input type="file" id="product-images-input" name="files" multiple hidden />
             <h4 class="mb-3">Inventory</h4>
             <div class="row g-0 border-top border-bottom">
                 <div class="col-sm-4">
@@ -83,17 +70,18 @@
                             <h4 class="mb-3 d-sm-none">Pricing</h4>
                             <div class="row g-3">
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Giá gốc</h5>
-                                    <input class="form-control" type="number" placeholder="VNĐ" asp-for="Price" />
+                                    <h5 class="mb-2 text-body-highlight">Giá gốc (VNĐ)</h5>
+                                    <input class="form-control form-control-lg" type="number" asp-for="Price" readonly />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Giảm giá</h5>
-                                    <input class="form-control" type="number" placeholder="VNĐ" asp-for="SalePrice" />
+                                    <h5 class="mb-2 text-body-highlight">Giảm giá (VNĐ)</h5>
+                                    <input class="form-control form-control-lg" type="number" asp-for="SalePrice" readonly />
                                     <span asp-validation-for="SalePrice" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
+                        <!-- Thông tin kho hàng -->
                         <div class="tab-pane fade h-100" id="restockTabContent" role="tabpanel" aria-labelledby="restockTab">
                             <div class="d-flex flex-column h-100">
                                 <table>
@@ -106,12 +94,7 @@
                                     <tbody>
                                         <tr>
                                             <td class="text-body-highlight fw-bold py-1">Tổng sản phẩm trong kho:</td>
-                                            <td class="text-body-tertiary fw-semibold py-1">
-                                                $1,090
-                                                <button class="btn p-0" type="button">
-                                                    <span class="fa-solid fa-rotate text-body ms-1" style="--phoenix-text-opacity: .6;"></span>
-                                                </button>
-                                            </td>
+                                            <td class="text-body-tertiary fw-semibold py-1">@variants?.Sum(v => v.StockQuantity)</td>
                                         </tr>
                                         <tr>
                                             <td class="text-body-highlight fw-bold py-1">Tổng sản phẩm trong suốt quá trình:</td>
@@ -136,11 +119,9 @@
                                 <div class="col-12 col-sm-6 col-xl-12">
                                     <div class="mb-4">
                                         <div class="d-flex flex-wrap flex-between-center mb-2">
-                                            <h5 class="mb-0 text-body-highlight me-2">Danh mục</h5><a class="fw-bold fs-9" href="#!">Thêm danh mục</a>
+                                            <h5 class="mb-0 text-body-highlight me-2">Danh mục</h5>
                                         </div>
-                                        <select class="form-select mb-3" aria-label="category" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
-                                            <option value="" disabled selected hidden>-- Chọn danh mục --</option>
-                                        </select>
+                                        <input class="form-select mb-3" aria-label="category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" readonly />
                                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -148,11 +129,9 @@
                                 <div class="col-12 col-sm-6 col-xl-12">
                                     <div class="mb-4">
                                         <div class="d-flex flex-wrap flex-between-center mb-2">
-                                            <h5 class="mb-0 text-body-highlight me-2">Nhà sản xuất</h5><a class="fw-bold fs-9" href="#!">Thêm nhà sản xuất</a>
+                                            <h5 class="mb-0 text-body-highlight me-2">Nhà sản xuất</h5>
                                         </div>
-                                        <select class="form-select mb-3" aria-label="manufacturer" asp-for="ManufacturerId" asp-items="ViewBag.ManufacturerId">
-                                            <option value="" disabled selected hidden>-- Chọn nhà sản xuất --</option>
-                                        </select>
+                                        <input class="form-select mb-3" aria-label="manufacturer" asp-for="ManufacturerId" asp-items="ViewBag.ManufacturerId" readonly />
                                         <span asp-validation-for="ManufacturerId" class="text-danger"></span>
                                     </div>
                                 </div>
@@ -161,11 +140,7 @@
                                     <div class="d-flex flex-wrap flex-between-center mb-2">
                                         <h5 class="mb-0 text-body-highlight me-2">Trạng thái</h5>
                                     </div>
-                                    <select class="form-select" aria-label="category" asp-for="Status">
-                                        <option value="" disabled selected hidden>-- Chọn trạng thái --</option>
-                                        <option value="true">Active</option>
-                                        <option value="false">Inactive</option>
-                                    </select>
+                                    <input class="form-select mb-3" aria-label="category" value="@(Model.Status == true ? "Active" : "Inactive")" readonly />
                                     <span asp-validation-for="Status" class="text-danger"></span>
                                 </div>
                             </div>
@@ -178,139 +153,46 @@
                             <!-- Tạo các ProductVariant -->
                             <h4 class="card-title mb-4">Biến thể</h4>
                             <div id="variants-container" class="row g-3">
+                                @if (variants != null && variants.Any())
+                                {
+                                    var index = 1;
+                                    foreach (var variant in variants)
+                                    {
+                                        <div class="col-12 col-sm-6 col-xl-12 variant-item border-bottom pb-4 mb-4">
+                                            <div class="d-flex flex-wrap flex-between-center mb-2">
+                                                <h5 class="text-body-highlight me-2">Biến thể @index</h5>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Hương vị</label>
+                                                <input class="form-select mb-3" type="text" value="@variant.Flavour?.FlavourName" readonly />
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Trọng lượng (kg)</label>
+                                                <input class="form-select mb-3" type="text" value="@(variant.Weight?.WeightValue.ToString("0.##"))" readonly />
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Giá biến thể (VNĐ)</label>
+                                                <input class="form-control mb-3" type="number" value="@(variant.Price?.ToString() ?? string.Empty)" readonly />
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Số lượng trong kho</label>
+                                                <input class="form-control mb-3" type="number" value="@variant.StockQuantity" readonly />
+                                            </div>
+                                        </div>
+                                        index++;
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-12">
+                                        <span class="text-body-secondary">Không có biến thể cho sản phẩm này.</span>
+                                    </div>
+                                }
                             </div>
-                            <button id="add-variant-btn" class="btn btn-phoenix-primary w-100" type="button">Thêm biến thể</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</form>
-
-@section Scripts {
-    <script src="~/phoenix/vendors/tinymce/tinymce.min.js"></script>
-    <script src="~/phoenix/vendors/dropzone/dropzone-min.js"></script>
-    <script src="~/phoenix/vendors/choices/choices.min.js"></script>
-    <script src="~/phoenix/vendors/flatpickr/flatpickr.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const addVariantBtn = document.getElementById('add-variant-btn');
-            const variantsContainer = document.getElementById('variants-container');
-            let variantIndex = 0;
-
-            function updateVariantIndices() {
-                const variants = variantsContainer.querySelectorAll('.variant-item');
-                variants.forEach((variant, idx) => {
-                    variant.querySelector('h5').textContent = `Biến thể ${idx + 1}`;
-
-                    const inputs = variant.querySelectorAll('select, input, textarea');
-                    inputs.forEach(input => {
-                        const name = input.getAttribute('name');
-                        if (name) {
-                            input.setAttribute('name', name.replace(/\[\d+\]/, `[${idx}]`));
-                        }
-                    });
-                });
-                variantIndex = variants.length;
-            }
-
-            addVariantBtn.addEventListener('click', function () {
-                variantIndex = variantsContainer.querySelectorAll('.variant-item').length;
-
-                const variantDiv = document.createElement('div');
-                variantDiv.className = 'variant-item border-bottom pb-4 mb-4';
-
-                variantDiv.innerHTML = `
-                    <!-- Variant -->
-                    <div class="col-12 col-sm-6 col-xl-12">
-                        <div class="pb-4">
-                            <div class="d-flex flex-wrap flex-between-center mb-2">
-                                <h5 class="text-body-highlight me-2">Biến thể ${variantIndex + 1}</h5>
-                                <button type="button" class="btn btn-sm btn-phoenix-danger remove-variant-btn">Xóa</button>
-                            </div>
-                            <input type="hidden" name="ProductVariants[${variantIndex}].VariantId" value="0" />
-                            <div class="mb-2">
-                                <label class="form-label">Hương vị</label>
-                                <select class="form-select" name="ProductVariants[${variantIndex}].FlavourId">
-                                    <option value="" selected disabled hidden>-- Chọn hương vị --</option>
-                                    @foreach (var item in (SelectList)ViewBag.FlavourId)
-                                    {
-                                            <option value="@item.Value">@item.Text</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Trọng lượng (kg)</label>
-                                <select class="form-select" name="ProductVariants[${variantIndex}].WeightId">
-                                    <option value="" selected disabled hidden>-- Chọn trọng lượng --</option>
-                                    @foreach (var item in (SelectList)ViewBag.WeightId)
-                                    {
-                                            <option value="@item.Value">@item.Text</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Giá biến thể (VNĐ)</label>
-                                <input class="form-control" type="number" placeholder="Để trống nếu dùng giá gốc" name="ProductVariants[${variantIndex}].Price" />
-                            </div>
-                            <div>
-                                <label class="form-label">Số lượng trong kho</label>
-                                <input class="form-control" type="number" placeholder="Số lượng" name="ProductVariants[${variantIndex}].StockQuantity" required />
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                variantsContainer.appendChild(variantDiv);
-
-                updateVariantIndices();
-
-                variantIndex = variantsContainer.querySelectorAll('.variant-item').length;
-
-                variantDiv.querySelector('.remove-variant-btn').addEventListener('click', function () {
-                    variantDiv.remove();
-                    updateVariantIndices();
-                });
-
-                variantIndex++;
-            });
-
-            const dropzoneElement = document.getElementById('product-images-dropzone');
-            const hiddenInput = document.getElementById('product-images-input');
-
-            if (dropzoneElement && hiddenInput && window.Dropzone) {
-                const previewsContainer = dropzoneElement.querySelector('.dz-preview');
-                const previewTemplate = previewsContainer.innerHTML;
-                previewsContainer.innerHTML = '';
-
-                const dataTransfer = new DataTransfer();
-
-                const dropzone = new Dropzone(dropzoneElement, {
-                    url: '#',
-                    autoProcessQueue: false,
-                    addRemoveLinks: true,
-                    previewsContainer: previewsContainer,
-                    previewTemplate: previewTemplate,
-                    paramName: 'files'
-                });
-
-                dropzone.on('addedfile', file => {
-                    dataTransfer.items.add(file);
-                    hiddenInput.files = dataTransfer.files;
-                });
-
-                dropzone.on('removedfile', file => {
-                    for (let i = 0; i < dataTransfer.items.length; i++) {
-                        const itemFile = dataTransfer.items[i].getAsFile();
-                        if (itemFile && itemFile.name === file.name && itemFile.size === file.size && itemFile.lastModified === file.lastModified) {
-                            dataTransfer.items.remove(i);
-                            break;
-                        }
-                    }
-                    hiddenInput.files = dataTransfer.files;
-                });
-            }
-        });
-    </script>
-}
+</div>

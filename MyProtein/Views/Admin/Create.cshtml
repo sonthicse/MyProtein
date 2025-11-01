@@ -29,11 +29,11 @@
         <div class="col-12 col-xl-8">
             <!-- Nhập SKU -->
             <h4 class="mb-3">SKU</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write SKU here..." asp-for="Sku" />
+            <input class="form-control form-control-lg mb-5" type="text" placeholder="Write SKU here..." asp-for="Sku" />
             <span asp-validation-for="Sku" class="text-danger"></span>
             <!-- Nhập Name -->
             <h4 class="mb-3">Tên sản phẩm</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write title here..." asp-for="Name" />
+            <input class="form-control form-control-lg mb-5" type="text" placeholder="Write title here..." asp-for="Name" />
             <span asp-validation-for="Name" class="text-danger"></span>
             <!-- Nhập Description -->
             <div class="mb-6">
@@ -83,12 +83,12 @@
                             <h4 class="mb-3 d-sm-none">Pricing</h4>
                             <div class="row g-3">
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Giá gốc</h5>
+                                    <h5 class="mb-2 text-body-highlight">Giá gốc (VNĐ)</h5>
                                     <input class="form-control" type="number" placeholder="VNĐ" asp-for="Price" />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Giảm giá</h5>
+                                    <h5 class="mb-2 text-body-highlight">Giảm giá (VNĐ)</h5>
                                     <input class="form-control" type="number" placeholder="VNĐ" asp-for="SalePrice" />
                                     <span asp-validation-for="SalePrice" class="text-danger"></span>
                                 </div>

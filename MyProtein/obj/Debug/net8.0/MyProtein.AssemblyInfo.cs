@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyProtein")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ac36243e982a839bd2a9a44065d76b04de5e3d46")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b407fd53d08e68bca145163287d175f4ddc460ef")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyProtein")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyProtein")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
