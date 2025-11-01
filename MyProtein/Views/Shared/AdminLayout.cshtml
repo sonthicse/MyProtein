@@ -10,7 +10,7 @@
 	<!-- ===============================================-->
 	<!--    Document Title-->
 	<!-- ===============================================-->
-	<title>Phoenix</title>
+	<title>@ViewData[index: "Title"]</title>
 
 	<!-- ===============================================-->
 	<!--    Favicons-->
@@ -28,18 +28,13 @@
 	<!-- ===============================================-->
 	<!--    Stylesheets-->
 	<!-- ===============================================-->
-	<!-- Section để các View con có thể chèn stylesheet riêng -->
 	@await RenderSectionAsync("Styles", required: false)
 
 	<link rel="preconnect" href="https://fonts.googleapis.com/">
 	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
 	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
-
-	<!-- Các thư viện vendor CSS -->
 	<link href="~/phoenix/vendors/simplebar/simplebar.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="~/phoenix/assets/icons/line.css">
-
-	<!-- CSS chính của theme -->
 	<link href="~/phoenix/assets/css/theme.min.css" type="text/css" rel="stylesheet" id="style-default">
 	<link href="~/phoenix/assets/css/user.min.css" type="text/css" rel="stylesheet" id="user-style-default">
 
@@ -51,20 +46,21 @@
 	<!-- ===============================================-->
 	<main class="main" id="top">
 		<nav class="navbar navbar-vertical navbar-expand-lg" style="display:none;">
-			@* Sidebar *@
+			<!-- Sidebar -->
 		</nav>
 		<nav class="navbar navbar-top fixed-top navbar-expand" id="navbarDefault" style="display:none;">
 			<div class="collapse navbar-collapse justify-content-between">
 				<div class="navbar-logo">
 					<button class="btn navbar-toggler navbar-toggler-humburger-icon hover-bg-transparent" type="button"
 						data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse"
-						aria-controls="navbarVerticalCollapse" aria-expanded="false"
-						aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span
-								class="toggle-line"></span></span></button>
+						aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation">
+						<span class="navbar-toggle-icon"><span class="toggle-line">
+							</span></span>
+					</button>
 					<a class="navbar-brand me-1 me-sm-3" href="index.html">
 						<div class="d-flex align-items-center">
-							<div class="d-flex align-items-center"><img src="~/phoenix/assets/img/icons/logo.png" alt="phoenix"
-									width="27" />
+							<div class="d-flex align-items-center"><img src="~/phoenix/assets/img/icons/logo.png"
+									alt="phoenix" width="27" />
 								<h5 class="logo-text ms-2 d-none d-sm-block">phoenix</h5>
 							</div>
 						</div>
@@ -78,7 +74,9 @@
 						<span class="fas fa-search search-box-icon"></span>
 					</form>
 					<div class="btn-close position-absolute end-0 top-50 translate-middle cursor-pointer shadow-none"
-						data-bs-dismiss="search"><button class="btn btn-link p-0" aria-label="Close"></button></div>
+						data-bs-dismiss="search">
+						<button class="btn btn-link p-0" aria-label="Close"></button>
+					</div>
 					<div class="dropdown-menu border start-0 py-0 overflow-hidden w-100">
 						<div class="scrollbar-overlay" style="max-height: 30rem;">
 							<div class="list pb-3">
@@ -88,8 +86,8 @@
 								<h6
 									class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
 									Recently Searched </h6>
-								<div class="py-2"><a class="dropdown-item"
-										href="apps/e-commerce/landing/product-details.html">
+								<div class="py-2">
+									<a class="dropdown-item" href="apps/e-commerce/landing/product-details.html">
 										<div class="d-flex align-items-center">
 											<div class="fw-normal text-body-highlight title"><span
 													class="fa-solid fa-clock-rotate-left"
@@ -108,7 +106,8 @@
 								<h6
 									class="dropdown-header text-body-highlight fs-9 border-bottom border-translucent py-2 lh-sm">
 									Products</h6>
-								<div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
+								<div class="py-2">
+									<a class="dropdown-item py-2 d-flex align-items-center"
 										href="apps/e-commerce/landing/product-details.html">
 										<div class="file-thumbnail me-2"><img
 												class="h-100 w-100 object-fit-cover rounded-3"
@@ -188,7 +187,8 @@
 								<div class="py-2"><a class="dropdown-item py-2 d-flex align-items-center"
 										href="pages/members.html">
 										<div class="avatar avatar-l status-online  me-2 text-body">
-											<img class="rounded-circle " src="~/phoenix/assets/img/team/40x40/10.webp" alt="" />
+											<img class="rounded-circle " src="~/phoenix/assets/img/team/40x40/10.webp"
+												alt="" />
 										</div>
 										<div class="flex-1">
 											<h6 class="mb-0 text-body-highlight title">Carry Anna</h6>
@@ -197,7 +197,8 @@
 									</a>
 									<a class="dropdown-item py-2 d-flex align-items-center" href="pages/members.html">
 										<div class="avatar avatar-l  me-2 text-body">
-											<img class="rounded-circle " src="~/phoenix/assets/img/team/40x40/12.webp" alt="" />
+											<img class="rounded-circle " src="~/phoenix/assets/img/team/40x40/12.webp"
+												alt="" />
 										</div>
 										<div class="flex-1">
 											<h6 class="mb-0 text-body-highlight title">John Smith</h6>
@@ -263,7 +264,8 @@
 								<div class="card-body p-0">
 									<div class="text-center pt-4 pb-3">
 										<div class="avatar avatar-xl ">
-											<img class="rounded-circle " src="~/phoenix/assets/img/icons/logo.png" alt="" />
+											<img class="rounded-circle " src="~/phoenix/assets/img/icons/logo.png"
+												alt="" />
 										</div>
 										<h6 class="mt-2 text-body-emphasis">Jerry Seinfield</h6>
 									</div>

@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "C#: MyProtein [https]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}\\MyProtein.csproj",
+            "launchConfigurationId": "TargetFramework=;https"
+        },
+        {
+            "name": ".NET Core Attach (Hot Reload)",
+            "type": "coreclr",
+            "request": "attach",
+        }
+    ]
+}

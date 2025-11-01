@@ -1,215 +1,250 @@
-﻿@model IEnumerable<MyProtein.Models.Product>
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model IEnumerable<MyProtein.Models.Product>
 
 @{
-    Layout = "AdminLayout";
-    var categories = ViewBag.Categories as List<MyProtein.Models.Category>;
-    var manufacturers = ViewBag.Manufacturers as List<MyProtein.Models.Manufacturer>;
-    
+	Layout = "AdminLayout";
+	ViewData[index: "Title"] = "Danh sách sản phẩm";
+	var categories = (ViewBag.Categories as List<MyProtein.Models.Category>) ?? new List<MyProtein.Models.Category>();
+	var manufacturers = (ViewBag.Manufacturers as List<MyProtein.Models.Manufacturer>) ?? new List<MyProtein.Models.Manufacturer>();
 }
 
 <div class="mb-9">
-    <div class="row g-3 mb-4">
-        <div class="col-auto">
-            <h2 class="mb-0">Danh sách sản phẩm</h2>
-        </div>
-    </div>
-    <form method="get" asp-action="Products" asp-controller="Admin">
-        <div class="mb-4">
-            <div class="d-flex flex-wrap gap-3">
-                <!-- Search Box -->
-                <div class="search-box">
-                    <input class="form-control search-input" type="search" name="searchTerm" placeholder="Tìm kiếm" value="@ViewBag.SearchTerm" />
-                    <span class="fas fa-search search-box-icon"></span>
-                </div>
+	<div class="row g-3 mb-4">
+		<div class="col-auto">
+			<h2 class="mb-0">@ViewData[index: "Title"]</h2>
+		</div>
+	</div>
+	<form method="get" asp-action="Products" asp-controller="Admin">
+		<div class="mb-4">
+			<div class="d-flex flex-wrap gap-3">
+				<!-- Search Box -->
+				<div class="search-box">
+					<input class="form-control search-input" type="search" name="searchTerm" placeholder="Tìm kiếm"
+						value="@ViewBag.SearchTerm" />
+					<span class="fas fa-search search-box-icon"></span>
+				</div>
 
-                <!-- Category Filter -->
-                <div class="btn-group position-static text-nowrap">
-                    <button class="btn btn-phoenix-secondary px-5 flex-shrink-0" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false">Danh mục<span class="fas fa-angle-down ms-2"></span></button>
-                    <ul class="dropdown-menu" style="min-width: 250px; padding: 1rem;">
-                        @foreach (var category in categories)
-                        {
-                            <li class="form-check">
-                                <input class="form-check-input" type="checkbox" name="categoryIds" value="@category.CategoryId" id="cat-@category.CategoryId" @((ViewBag.SelectedCategoryIds as int[]).Contains(category.CategoryId) ? "checked" : "") />
-                                <label class="form-check-label" for="cat-@category.CategoryId">
-                                    @category.Name
-                                </label>
-                            </li>
-                        }
-                    </ul>
-                </div>
+				<!-- Category Filter -->
+				<div class="btn-group position-static text-nowrap">
+					<button class="btn btn-phoenix-secondary px-5 flex-shrink-0" type="button" data-bs-toggle="dropdown"
+						data-boundary="window" aria-haspopup="true" aria-expanded="false">
+						Danh mục
+						<span class="fas fa-angle-down ms-2"></span>
+					</button>
+					<ul class="dropdown-menu" style="min-width: 250px; padding: 1rem;">
+						@foreach (var category in categories)
+						{
+							<li class="form-check">
+								<input class="form-check-input" type="checkbox" name="categoryIds"
+									value="@category.CategoryId" id="cat-@category.CategoryId"
+									@(((ViewBag.SelectedCategoryIds as int[])?.Contains(category.CategoryId) == true) ?
+											"checked" : "") />
+								<label class="form-check-label" for="cat-@category.CategoryId">
+									@category.Name
+								</label>
+							</li>
+						}
+					</ul>
+				</div>
 
-                <!-- Manufacturer Filter -->
-                <div class="btn-group position-static text-nowrap">
-                    <button class="btn btn-phoenix-secondary px-5 flex-shrink-0" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false">
-                        Nhà sản xuất
-                        <span class="fas fa-angle-down ms-2"></span>
-                    </button>
-                    <ul class="dropdown-menu" style="min-width: 250px; padding: 1rem;">
-                        @foreach (var manufacturer in manufacturers)
-                        {
-                            <li class="form-check">
-                                <input class="form-check-input" type="checkbox" name="manufacturerIds" value="@manufacturer.ManufacturerId" id="man-@manufacturer.ManufacturerId"
-                                       @((ViewBag.SelectedManufacturerIds as int[]).Contains(manufacturer.ManufacturerId) ? "checked" : "") />
-                                <label class="form-check-label" for="man-@manufacturer.ManufacturerId">
-                                    @manufacturer.Name
-                                </label>
-                            </li>
-                        }
-                    </ul>
-                </div>
+				<!-- Manufacturer Filter -->
+				<div class="btn-group position-static text-nowrap">
+					<button class="btn btn-phoenix-secondary px-5 flex-shrink-0" type="button" data-bs-toggle="dropdown"
+						data-boundary="window" aria-haspopup="true" aria-expanded="false">
+						Nhà sản xuất
+						<span class="fas fa-angle-down ms-2"></span>
+					</button>
+					<ul class="dropdown-menu" style="min-width: 250px; padding: 1rem;">
+						@if (manufacturers != null && manufacturers.Any())
+						{
+							@foreach (var manufacturer in manufacturers)
+							{
+								<li class="form-check">
+									<input class="form-check-input" type="checkbox" name="manufacturerIds"
+										value="@manufacturer.ManufacturerId" id="man-@manufacturer.ManufacturerId"
+										@(((ViewBag.SelectedManufacturerIds as int[])?.Contains(manufacturer.ManufacturerId) ==
+													true) ? "checked" : "") />
+										<label class="form-check-label" for="man-@manufacturer.ManufacturerId">
+											@manufacturer.Name
+										</label>
+								</li>
+							}
+						}
+					</ul>
+				</div>
 
-                <!-- Price Filter -->
-                <div class="d-flex gap-2">
-                    <input class="form-control" type="number" name="minPrice" placeholder="Giá từ" value="@ViewBag.MinPrice" style="width: 150px;" />
-                    <input class="form-control" type="number" name="maxPrice" placeholder="Giá đến" value="@ViewBag.MaxPrice" style="width: 150px;" />
-                </div>
+				<!-- Price Filter -->
+				<div class="d-flex gap-2">
+					<input class="form-control" type="number" name="minPrice" placeholder="Giá từ"
+						value="@ViewBag.MinPrice" style="width: 150px;" />
+					<input class="form-control" type="number" name="maxPrice" placeholder="Giá đến"
+						value="@ViewBag.MaxPrice" style="width: 150px;" />
+				</div>
 
-                <!-- Nút bấm -->
-                <button class="btn btn-primary" type="submit">Lọc</button>
-                <a class="btn btn-phoenix-secondary" asp-action="Products">Xóa lọc</a>
+				<!-- Nút bấm -->
+				<button class="btn btn-primary" type="submit">Lọc</button>
+				<a class="btn btn-phoenix-secondary" asp-action="Products">Xóa lọc</a>
 
-                <div class="ms-xxl-auto">
-                    <a class="btn btn-primary" asp-action="Create">
-                        <span class="fas fa-plus me-2"></span>Tạo mới
-                    </a>
-                </div>
-            </div>
-        </div>
-    </form>
+				<div class="ms-xxl-auto">
+					<a class="btn btn-primary" asp-action="Create">
+						<span class="fas fa-plus me-2"></span>Tạo mới
+					</a>
+				</div>
+			</div>
+		</div>
+	</form>
 
-    <!-- ===============================================-->
-    <!--    BẢNG DỮ LIỆU                                  -->
-    <!-- ===============================================-->
-    <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
-        <div class="table-responsive scrollbar mx-n1 px-1">
-            <table class="table fs-9 mb-0">
-                <thead>
-                    <tr>
-                        <th class="white-space-nowrap align-middle ps-4" style="width:70px;">SKU</th>
-                        <th class="fs-10" style="width:70px;"></th>
-                        <th class="white-space-nowrap align-middle ps-4" style="width:250px;">TÊN SẢN PHẨM</th>
-                        <th class="white-space-nowrap align-middle ps-4" style="width:150px;">DANH MỤC</th>
-                        <th class="white-space-nowrap align-middle ps-4 text-end" style="width:150px;">GIÁ (VNĐ)</th>
-                        <th class="white-space-nowrap align-middle ps-4 text-end" style="width:150px;">GIẢM GIÁ (VNĐ)</th>
-                        <th class="white-space-nowrap align-middle ps-4" style="width:150px;">NHÀ SẢN XUẤT</th>
-                        <th class="white-space-nowrap align-middle ps-4" style="width:350px;">MÔ TẢ</th>
-                        <th class="text-end align-middle pe-0 ps-4"></th>
-                    </tr>
-                </thead>
-                <tbody id="products-table-body">
-                    @foreach (var item in Model)
-                    {
-                        <tr class="position-static">
-                            <td class="align-middle fs-9 ps-4 fw-semibold">@item.Sku</td>
-                            <td class="align-middle white-space-nowrap py-0">
-                                <a class="d-block border border-translucent rounded-2" asp-action="Details" asp-route-id="@item.ProductId">
-                                    <img src="~/phoenix/assets/img/products/images.png" alt="" width="53">
-                                </a>
-                            </td>
-                            <td class="align-middle ps-4">
-                                <a class="fw-semibold line-clamp-3 mb-0" asp-action="Details" asp-route-id="@item.ProductId">@item.Name</a>
-                            </td>
-                            <td class="align-middle text-body-quaternary fs-9 ps-4 fw-semibold">@item.Category?.Name</td>
-                            <td class="align-middle white-space-nowrap text-end fw-bold text-body-tertiary ps-4">@item.Price.ToString("N0")</td>
-                            <td class="align-middle white-space-nowrap text-end fw-bold text-body-tertiary ps-4">@item.SalePrice?.ToString("N0")</td>
-                            <td class="align-middle text-start fw-semibold ps-4">@item.Manufacturer?.Name</td>
-                            <td class="align-middle text-wrap text-body-tertiary text-opacity-85 ps-4">@item.Description</td>
-                            <td class="align-middle white-space-nowrap text-end pe-0 ps-4">
-                                <div class="btn-reveal-trigger position-static">
-                                    <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
-                                        <span class="fas fa-ellipsis-h fs-10"></span>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-end py-2">
-                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.ProductId">Xem</a>
-                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.ProductId">Sửa</a>
-                                        <div class="dropdown-divider"></div>
-                                        <form asp-action="DeleteProduct" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
-                                            <input type="hidden" name="ProductId" value="@item.ProductId" />
-                                            <button class="dropdown-item text-danger" type="submit">Xóa</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+	<!-- ===============================================-->
+	<!--    BẢNG DỮ LIỆU                                  -->
+	<!-- ===============================================-->
+	<div
+		class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+		<div class="table-responsive scrollbar mx-n1 px-1">
+			<table class="table fs-9 mb-0">
+				<thead>
+					<tr>
+						<th class="white-space-nowrap align-middle ps-4" style="width:70px;">SKU</th>
+						<th class="fs-10" style="width:70px;"></th>
+						<th class="white-space-nowrap align-middle ps-4" style="width:250px;">TÊN SẢN PHẨM</th>
+						<th class="white-space-nowrap align-middle ps-4" style="width:150px;">DANH MỤC</th>
+						<th class="white-space-nowrap align-middle ps-4 text-end" style="width:150px;">GIÁ (VNĐ)</th>
+						<th class="white-space-nowrap align-middle ps-4 text-end" style="width:150px;">GIẢM GIÁ (VNĐ)
+						</th>
+						<th class="white-space-nowrap align-middle ps-4" style="width:150px;">NHÀ SẢN XUẤT</th>
+						<th class="white-space-nowrap align-middle ps-4" style="width:350px;">MÔ TẢ</th>
+						<th class="text-end align-middle pe-0 ps-4"></th>
+					</tr>
+				</thead>
+				<tbody id="products-table-body">
+					@foreach (var item in Model)
+					{
+						<tr class="position-static">
+							<td class="align-middle fs-9 ps-4 fw-semibold">@item.Sku</td>
+							<td class="align-middle white-space-nowrap py-0">
+								<a class="d-block border border-translucent rounded-2" asp-action="Details"
+									asp-route-id="@item.ProductId">
+									<img src="~/phoenix/assets/img/products/images.png" alt="" width="53">
+								</a>
+							</td>
+							<td class="align-middle ps-4">
+								<a class="fw-semibold line-clamp-3 mb-0" asp-action="Details"
+									asp-route-id="@item.ProductId">@item.Name</a>
+							</td>
+							<td class="align-middle text-body-quaternary fs-9 ps-4 fw-semibold">@item.Category?.Name</td>
+							<td class="align-middle white-space-nowrap text-end fw-bold text-body-tertiary ps-4">
+								@item.Price.ToString("N0")</td>
+							<td class="align-middle white-space-nowrap text-end fw-bold text-body-tertiary ps-4">
+								@item.SalePrice?.ToString("N0")</td>
+							<td class="align-middle text-start fw-semibold ps-4">@item.Manufacturer?.Name</td>
+							<td class="align-middle text-wrap text-body-tertiary text-opacity-85 ps-4">@item.Description
+							</td>
+							<td class="align-middle white-space-nowrap text-end pe-0 ps-4">
+								<div class="btn-reveal-trigger position-static">
+									<button
+										class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
+										type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+										aria-expanded="false" data-bs-reference="parent">
+										<span class="fas fa-ellipsis-h fs-10"></span>
+									</button>
+									<div class="dropdown-menu dropdown-menu-end py-2">
+										<a class="dropdown-item" asp-action="Details" asp-route-id="@item.ProductId">Xem</a>
+										<a class="dropdown-item" asp-action="Edit" asp-route-id="@item.ProductId">Sửa</a>
+										<div class="dropdown-divider"></div>
+										<form asp-action="Delete" method="post"
+											onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+											<input type="hidden" name="id" value="@item.ProductId" />
+											<button class="dropdown-item text-danger" type="submit">Xóa</button>
+										</form>
+									</div>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
 
-        <!-- ===============================================-->
-        <!--    PHÂN TRANG ĐỘNG                            -->
-        <!-- ===============================================-->
-        @{
-            int totalPages = ViewBag.TotalPages;
-            int currentPage = ViewBag.PageNumber;
-            int totalItems = ViewBag.TotalItems;
+		<!-- ===============================================-->
+		<!--    PHÂN TRANG ĐỘNG                            -->
+		<!-- ===============================================-->
+		@{
+			int totalPages = ViewBag.TotalPages;
+			int currentPage = ViewBag.PageNumber;
+			int totalItems = ViewBag.TotalItems;
 
-            int startItem = (currentPage - 1) * (ViewBag.PageSize) + 1;
-            int endItem = Math.Min(currentPage * (ViewBag.PageSize), totalItems);
-        }
+			int startItem = (currentPage - 1) * (ViewBag.PageSize) + 1;
+			int endItem = Math.Min(currentPage * (ViewBag.PageSize), totalItems);
+		}
 
-        <!-- Chỗ này phân trang phức tạp không được bấm linh tinh -->
-        @if (totalPages > 1)
-        {
-            <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
-                <div class="col-auto d-flex">
-                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
-                        Hiển thị @startItem - @endItem <span class="text-body-tertiary"> trên tổng </span> @totalItems
-                    </p>
-                </div>
-                <div class="col-auto d-flex">
-                    @{
-                        // Bắt đầu xây dựng chuỗi query string
-                        var queryBuilder = new System.Text.StringBuilder();
+		<!-- Chỗ này phân trang phức tạp không được bấm linh tinh -->
+		@if (totalPages > 1)
+		{
+			<div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+				<div class="col-auto d-flex">
+					<p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
+						Hiển thị @startItem - @endItem <span class="text-body-tertiary"> trên tổng </span> @totalItems
+					</p>
+				</div>
+				<div class="col-auto d-flex">
+					@{
+						// Bắt đầu xây dựng chuỗi query string
+						var queryBuilder = new System.Text.StringBuilder();
+						var categoriesIds = ViewBag.SelectedCategoryIds as int[] ?? new int[] { };
+						var manufacturerIds = ViewBag.SelectedManufacturerIds as int[] ?? new int[] { };
 
-                        // Thêm các tham số đơn giản
-                        if (ViewBag.SearchTerm != null) { queryBuilder.Append($"&searchTerm={System.Net.WebUtility.UrlEncode(ViewBag.SearchTerm)}"); }
-                        if (ViewBag.MinPrice != null) { queryBuilder.Append($"&minPrice={ViewBag.MinPrice}"); }
-                        if (ViewBag.MaxPrice != null) { queryBuilder.Append($"&maxPrice={ViewBag.MaxPrice}"); }
+						// Thêm các tham số đơn giản
+						if (ViewBag.SearchTerm != null)
+						{
+							queryBuilder.Append($"&searchTerm={System.Net.WebUtility.UrlEncode(ViewBag.SearchTerm)}");
+						}
+						if (ViewBag.MinPrice != null) { queryBuilder.Append($"&minPrice={ViewBag.MinPrice}"); }
+						if (ViewBag.MaxPrice != null) { queryBuilder.Append($"&maxPrice={ViewBag.MaxPrice}"); }
 
-                        // Thêm các tham số mảng (quan trọng)
-                        if (ViewBag.SelectedCategoryIds != null)
-                        {
-                            foreach (var id in ViewBag.SelectedCategoryIds as int[])
-                            {
-                                queryBuilder.Append($"&categoryIds={id}");
-                            }
-                        }
-                        if (ViewBag.SelectedManufacturerIds != null)
-                        {
-                            foreach (var id in ViewBag.SelectedManufacturerIds as int[])
-                            {
-                                queryBuilder.Append($"&manufacturerIds={id}");
-                            }
-                        }
+						// Thêm các tham số mảng (quan trọng)
+						if (categoriesIds != null)
+						{
+							foreach (var id in categoriesIds)
+							{
+								queryBuilder.Append($"&categoryIds={id}");
+							}
+						}
+						if (manufacturerIds != null)
+						{
+							foreach (var id in manufacturerIds)
+							{
+								queryBuilder.Append($"&manufacturerIds={id}");
+							}
+						}
 
-                        string filterQuery = queryBuilder.ToString();
-                    }
+						string filterQuery = queryBuilder.ToString();
+					}
 
-                    <!-- Nút Previous -->
-                    <a class="page-link @(currentPage == 1 ? "disabled" : "")"
-                       href="@Url.Action("Products", "Admin", new { pageNumber = currentPage - 1 })@filterQuery">
-                        <span class="fas fa-chevron-left"></span>
-                    </a>
+					<!-- Nút Previous -->
+					<a class="page-link @(currentPage == 1 ? "disabled" : "")"
+						href="@Url.Action("Products", "Admin", new { pageNumber = currentPage - 1 })@filterQuery">
+						<span class="fas fa-chevron-left"></span>
+					</a>
 
-                    <!-- Các nút số trang -->
-                    <ul class="mb-0 pagination">
-                        @for (int i = 1; i <= totalPages; i++)
-                        {
-                            <li class="page-item @(i == currentPage ? "active" : "")">
-                                <a class="page-link" href="@Url.Action("Products", "Admin", new { pageNumber = i })@filterQuery">@i</a>
-                            </li>
-                        }
-                    </ul>
+					<!-- Các nút số trang -->
+					<ul class="mb-0 pagination">
+						@for (int i = 1; i <= totalPages; i++)
+						{
+							<li class="page-item @(i == currentPage ? "active" : "")">
+								<a class="page-link"
+									href="@Url.Action("Products", "Admin", new { pageNumber = i })@filterQuery">@i</a>
+							</li>
+						}
+					</ul>
 
-                    <!-- Nút Next -->
-                    <a class="page-link pe-0 @(currentPage == totalPages ? "disabled" : "")"
-                       href="@Url.Action("Products", "Admin", new { pageNumber = currentPage + 1 })@filterQuery">
-                        <span class="fas fa-chevron-right"></span>
-                    </a>
-                </div>
-            </div>
-        }
+					<!-- Nút Next -->
+					<a class="page-link pe-0 @(currentPage == totalPages ? "disabled" : "")"
+						href="@Url.Action("Products", "Admin", new { pageNumber = currentPage + 1 })@filterQuery">
+						<span class="fas fa-chevron-right"></span>
+					</a>
+				</div>
+			</div>
+		}
 
-    </div>
+	</div>
 </div>

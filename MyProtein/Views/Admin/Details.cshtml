@@ -6,11 +6,12 @@
 
 @model MyProtein.Models.Product
 @using System.Linq
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
 
 <div class="mb-9">
     <div class="row g-3 flex-between-end mb-5">
         <div class="col-auto">
-            <h2 class="mb-2">Chi tiết sản phẩm</h2>
+            <h2 class="mb-2">@ViewData["Title"]</h2>
             <h5 class="text-body-tertiary fw-semibold">Thông tin sản phẩm hiện tại</h5>
         </div>
         <div class="col-auto">

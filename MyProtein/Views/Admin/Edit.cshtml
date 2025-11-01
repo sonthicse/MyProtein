@@ -1,6 +1,9 @@
-﻿@{
-    ViewData["Title"] = "Add Product";
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@{
+    ViewData[index: "Title"] = "Chỉnh sửa";
     Layout = "AdminLayout";
+    var variants = Model.ProductVariants?.ToList();
+    var images = Model.ProductImages?.ToList();
 }
 
 @model MyProtein.Models.Product
@@ -12,33 +15,37 @@
     <link rel="stylesheet" type="text/css" id="mce-u0" href="~/phoenix/vendors/tinymce/skins/ui/oxide/skin.min.css">
 }
 
-<form class="mb-9" asp-action="Create" method="post" enctype="multipart/form-data">
+<form class="mb-9" asp-controller="Admin" asp-action="Edit" method="post" enctype="multipart/form-data" onsubmit="return confirm('Bạn có chắc chắn muốn cập nhật sản phẩm này?');">
     @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ProductId" />
 
     <div class="row g-3 flex-between-end mb-5">
         <div class="col-auto">
-            <h2 class="mb-2">Thêm sản phẩm mới</h2>
+            <h2 class="mb-2">@ViewData[index: "Title"]</h2>
             <h5 class="text-body-tertiary fw-semibold">Orders placed across your store</h5>
         </div>
         <div class="col-auto">
             <a class="btn btn-phoenix-secondary me-2 mb-2 mb-sm-0" asp-action="Products">Hủy</a>
-            <button class="btn btn-primary mb-2 mb-sm-0" type="submit">Lưu</button>
+            <button class="btn btn-primary mb-2 mb-sm-0" type="submit">Cập nhật</button>
         </div>
     </div>
     <div class="row g-5">
         <div class="col-12 col-xl-8">
             <!-- Nhập SKU -->
             <h4 class="mb-3">SKU</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write SKU here..." asp-for="Sku" />
+            <input class="form-control form-control-lg mb-5" type="text" placeholder="Write SKU here..."
+                asp-for="Sku" />
             <span asp-validation-for="Sku" class="text-danger"></span>
             <!-- Nhập Name -->
             <h4 class="mb-3">Tên sản phẩm</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write title here..." asp-for="Name" />
+            <input class="form-control form-control-lg mb-5" type="text" placeholder="Write title here..."
+                asp-for="Name" />
             <span asp-validation-for="Name" class="text-danger"></span>
             <!-- Nhập Description -->
             <div class="mb-6">
                 <h4 class="mb-3">Mô tả</h4>
-                <textarea class="tinymce" asp-for="Description" data-tinymce='{"height":"15rem","placeholder":"Write a description here..."}'></textarea>
+                <textarea class="tinymce" asp-for="Description"
+                    data-tinymce='{"height":"15rem","placeholder":"Write a description here..."}'></textarea>
             </div>
             <!-- Nhập hình ảnh -->
             <h4 class="mb-3">Hình ảnh</h4>
@@ -47,12 +54,24 @@
                     <input class="form-control" name="files" type="file" multiple="multiple" />
                 </div>
                 <div class="dz-preview d-flex flex-wrap">
-                    <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center position-relative me-2 mb-2" style="height:80px;width:80px;">
-                        <img class="dz-image" src="~/phoenix/assets/img/products/23.png" alt="..." data-dz-thumbnail="data-dz-thumbnail" />
-                        <a class="dz-remove text-body-quaternary" href="#!" data-dz-remove="data-dz-remove">
+                    <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center position-relative me-2 mb-2"
+                        style="height:80px;width:80px;" data-dropzone-template>
+                        <img class="dz-image" alt="..." data-dz-thumbnail />
+                        <a class="dz-remove text-body-quaternary" href="javascript:void(0);" data-dz-remove>
                             <span data-feather="x"></span>
                         </a>
                     </div>
+                    @if (images != null && images.Any())
+                    {
+                        foreach (var image in images)
+                        {
+                            <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center position-relative me-2 mb-2"
+                                style="height:80px;width:80px;">
+                                <img class="img-fluid h-100 w-100 object-fit-cover rounded-3" src="@image.ImageUrl"
+                                    alt="@(!string.IsNullOrWhiteSpace(image.AltText) ? image.AltText : Model.Name)" />
+                            </div>
+                        }
+                    }
                 </div>
                 <div class="dz-message text-body-tertiary text-opacity-85" data-dz-message="data-dz-message">
                     Drag your photo here
@@ -66,12 +85,17 @@
             <h4 class="mb-3">Inventory</h4>
             <div class="row g-0 border-top border-bottom">
                 <div class="col-sm-4">
-                    <div class="nav flex-sm-column border-bottom border-bottom-sm-0 border-end-sm fs-9 vertical-tab h-100 justify-content-between" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active" id="pricingTab" data-bs-toggle="tab" data-bs-target="#pricingTabContent" role="tab" aria-controls="pricingTabContent" aria-selected="true">
+                    <div class="nav flex-sm-column border-bottom border-bottom-sm-0 border-end-sm fs-9 vertical-tab h-100 justify-content-between"
+                        role="tablist" aria-orientation="vertical">
+                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active"
+                            id="pricingTab" data-bs-toggle="tab" data-bs-target="#pricingTabContent" role="tab"
+                            aria-controls="pricingTabContent" aria-selected="true">
                             <span class="me-sm-2 fs-4 nav-icons" data-feather="tag"></span>
                             <span class="d-none d-sm-inline">Giá cả</span>
                         </a>
-                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center" id="restockTab" data-bs-toggle="tab" data-bs-target="#restockTabContent" role="tab" aria-controls="restockTabContent" aria-selected="false">
+                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                            id="restockTab" data-bs-toggle="tab" data-bs-target="#restockTabContent" role="tab"
+                            aria-controls="restockTabContent" aria-selected="false">
                             <span class="me-sm-2 fs-4 nav-icons" data-feather="package"></span>
                             <span class="d-none d-sm-inline">Kho hàng</span>
                         </a>
@@ -83,18 +107,19 @@
                             <h4 class="mb-3 d-sm-none">Pricing</h4>
                             <div class="row g-3">
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Giá gốc</h5>
+                                    <h5 class="mb-2 text-body-highlight">Giá gốc (VNĐ)</h5>
                                     <input class="form-control" type="number" placeholder="VNĐ" asp-for="Price" />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 col-lg-6">
-                                    <h5 class="mb-2 text-body-highlight">Giảm giá</h5>
+                                    <h5 class="mb-2 text-body-highlight">Giảm giá (VNĐ)</h5>
                                     <input class="form-control" type="number" placeholder="VNĐ" asp-for="SalePrice" />
                                     <span asp-validation-for="SalePrice" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade h-100" id="restockTabContent" role="tabpanel" aria-labelledby="restockTab">
+                        <div class="tab-pane fade h-100" id="restockTabContent" role="tabpanel"
+                            aria-labelledby="restockTab">
                             <div class="d-flex flex-column h-100">
                                 <table>
                                     <thead>
@@ -109,12 +134,14 @@
                                             <td class="text-body-tertiary fw-semibold py-1">
                                                 $1,090
                                                 <button class="btn p-0" type="button">
-                                                    <span class="fa-solid fa-rotate text-body ms-1" style="--phoenix-text-opacity: .6;"></span>
+                                                    <span class="fa-solid fa-rotate text-body ms-1"
+                                                        style="--phoenix-text-opacity: .6;"></span>
                                                 </button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td class="text-body-highlight fw-bold py-1">Tổng sản phẩm trong suốt quá trình:</td>
+                                            <td class="text-body-highlight fw-bold py-1">Tổng sản phẩm trong suốt quá
+                                                trình:</td>
                                             <td class="text-body-tertiary fw-semibold py-1">20,000</td>
                                         </tr>
                                     </tbody>
@@ -136,9 +163,11 @@
                                 <div class="col-12 col-sm-6 col-xl-12">
                                     <div class="mb-4">
                                         <div class="d-flex flex-wrap flex-between-center mb-2">
-                                            <h5 class="mb-0 text-body-highlight me-2">Danh mục</h5><a class="fw-bold fs-9" href="#!">Thêm danh mục</a>
+                                            <h5 class="mb-0 text-body-highlight me-2">Danh mục</h5><a
+                                                class="fw-bold fs-9" href="#!">Thêm danh mục</a>
                                         </div>
-                                        <select class="form-select mb-3" aria-label="category" asp-for="CategoryId" asp-items="ViewBag.CategoryId">
+                                        <select class="form-select mb-3" aria-label="category" asp-for="CategoryId"
+                                            asp-items="ViewBag.CategoryId">
                                             <option value="" disabled selected hidden>-- Chọn danh mục --</option>
                                         </select>
                                         <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -148,9 +177,11 @@
                                 <div class="col-12 col-sm-6 col-xl-12">
                                     <div class="mb-4">
                                         <div class="d-flex flex-wrap flex-between-center mb-2">
-                                            <h5 class="mb-0 text-body-highlight me-2">Nhà sản xuất</h5><a class="fw-bold fs-9" href="#!">Thêm nhà sản xuất</a>
+                                            <h5 class="mb-0 text-body-highlight me-2">Nhà sản xuất</h5><a
+                                                class="fw-bold fs-9" href="#!">Thêm nhà sản xuất</a>
                                         </div>
-                                        <select class="form-select mb-3" aria-label="manufacturer" asp-for="ManufacturerId" asp-items="ViewBag.ManufacturerId">
+                                        <select class="form-select mb-3" aria-label="manufacturer"
+                                            asp-for="ManufacturerId" asp-items="ViewBag.ManufacturerId">
                                             <option value="" disabled selected hidden>-- Chọn nhà sản xuất --</option>
                                         </select>
                                         <span asp-validation-for="ManufacturerId" class="text-danger"></span>
@@ -178,8 +209,64 @@
                             <!-- Tạo các ProductVariant -->
                             <h4 class="card-title mb-4">Biến thể</h4>
                             <div id="variants-container" class="row g-3">
+                                @if (variants != null && variants.Any())
+                                {
+                                    for (var i = 0; i < variants.Count; i++)
+                                    {
+                                        <div class="variant-item border-bottom pb-4 mb-4">
+                                            <div class="col-12 col-sm-6 col-xl-12">
+                                                <div class="pb-4">
+                                                    <div class="d-flex flex-wrap flex-between-center mb-2">
+                                                        <h5 class="text-body-highlight me-2">Biến thể @(i + 1)</h5>
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-phoenix-danger remove-variant-btn">Xóa</button>
+                                                    </div>
+                                                    <input type="hidden" asp-for="@variants[i].VariantId" />
+                                                    <div class="mb-2">
+                                                        <label class="form-label" asp-for="@variants[i].FlavourId">Hương
+                                                            vị</label>
+                                                        <select class="form-select" asp-for="@variants[i].FlavourId"
+                                                            asp-items="ViewBag.FlavourId">
+                                                            <option value="">-- Chọn hương vị --</option>
+                                                        </select>
+                                                        <span class="text-danger"
+                                                            asp-validation-for="@variants[i].FlavourId"></span>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label" asp-for="@variants[i].WeightId">Trọng lượng
+                                                            (kg)</label>
+                                                        <select class="form-select" asp-for="@variants[i].WeightId"
+                                                            asp-items="ViewBag.WeightId">
+                                                            <option value="">-- Chọn trọng lượng --</option>
+                                                        </select>
+                                                        <span class="text-danger"
+                                                            asp-validation-for="@variants[i].WeightId"></span>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label class="form-label" asp-for="@variants[i].Price">Giá biến thể
+                                                            (VNĐ)</label>
+                                                        <input class="form-control" type="number"
+                                                            placeholder="Để trống nếu dùng giá gốc"
+                                                            asp-for="@variants[i].Price" />
+                                                        <span class="text-danger"
+                                                            asp-validation-for="@variants[i].Price"></span>
+                                                    </div>
+                                                    <div>
+                                                        <label class="form-label" asp-for="@variants[i].StockQuantity">Số lượng
+                                                            trong kho</label>
+                                                        <input class="form-control" type="number" placeholder="Số lượng"
+                                                            asp-for="@variants[i].StockQuantity" />
+                                                        <span class="text-danger"
+                                                            asp-validation-for="@variants[i].StockQuantity"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
                             </div>
-                            <button id="add-variant-btn" class="btn btn-phoenix-primary w-100" type="button">Thêm biến thể</button>
+                            <button id="add-variant-btn" class="btn btn-phoenix-primary w-100" type="button">Thêm biến
+                                thể</button>
                         </div>
                     </div>
                 </div>
@@ -197,83 +284,123 @@
         document.addEventListener('DOMContentLoaded', function () {
             const addVariantBtn = document.getElementById('add-variant-btn');
             const variantsContainer = document.getElementById('variants-container');
-            let variantIndex = 0;
+            let variantIndex = @((Model.ProductVariants?.Count ?? 0));
 
             function updateVariantIndices() {
                 const variants = variantsContainer.querySelectorAll('.variant-item');
                 variants.forEach((variant, idx) => {
-                    variant.querySelector('h5').textContent = `Biến thể ${idx + 1}`;
+                    const title = variant.querySelector('h5');
+                    if (title) {
+                        title.textContent = `Biến thể ${idx + 1}`;
+                    }
 
                     const inputs = variant.querySelectorAll('select, input, textarea');
                     inputs.forEach(input => {
                         const name = input.getAttribute('name');
-                        if (name) {
-                            input.setAttribute('name', name.replace(/\[\d+\]/, `[${idx}]`));
+                        if (name && name.includes('ProductVariants[')) {
+                            input.setAttribute('name', name.replace(/ProductVariants\[\d+\]/, `ProductVariants[${idx}]`));
+                        }
+
+                        const id = input.getAttribute('id');
+                        if (id && id.includes('ProductVariants_')) {
+                            input.setAttribute('id', id.replace(/ProductVariants_\d+__/, `ProductVariants_${idx}__`));
+                        }
+                    });
+
+                    const labels = variant.querySelectorAll('label[for]');
+                    labels.forEach(label => {
+                        const htmlFor = label.getAttribute('for');
+                        if (htmlFor && htmlFor.includes('ProductVariants_')) {
+                            label.setAttribute('for', htmlFor.replace(/ProductVariants_\d+__/, `ProductVariants_${idx}__`));
+                        }
+                    });
+
+                    const validationMessages = variant.querySelectorAll('[data-valmsg-for]');
+                    validationMessages.forEach(message => {
+                        const valFor = message.getAttribute('data-valmsg-for');
+                        if (valFor && valFor.includes('ProductVariants[')) {
+                            message.setAttribute('data-valmsg-for', valFor.replace(/ProductVariants\[\d+\]/, `ProductVariants[${idx}]`));
                         }
                     });
                 });
+
                 variantIndex = variants.length;
             }
 
+            const existingRemoveButtons = variantsContainer.querySelectorAll('.remove-variant-btn');
+            existingRemoveButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const variantItem = button.closest('.variant-item');
+                    if (variantItem) {
+                        variantItem.remove();
+                        updateVariantIndices();
+                    }
+                });
+            });
+
+            updateVariantIndices();
+
             addVariantBtn.addEventListener('click', function () {
-                variantIndex = variantsContainer.querySelectorAll('.variant-item').length;
+                const currentIndex = variantIndex;
 
                 const variantDiv = document.createElement('div');
                 variantDiv.className = 'variant-item border-bottom pb-4 mb-4';
 
                 variantDiv.innerHTML = `
-                    <!-- Variant -->
-                    <div class="col-12 col-sm-6 col-xl-12">
-                        <div class="pb-4">
-                            <div class="d-flex flex-wrap flex-between-center mb-2">
-                                <h5 class="text-body-highlight me-2">Biến thể ${variantIndex + 1}</h5>
-                                <button type="button" class="btn btn-sm btn-phoenix-danger remove-variant-btn">Xóa</button>
-                            </div>
-                            <input type="hidden" name="ProductVariants[${variantIndex}].VariantId" value="0" />
-                            <div class="mb-2">
-                                <label class="form-label">Hương vị</label>
-                                <select class="form-select" name="ProductVariants[${variantIndex}].FlavourId">
-                                    <option value="" selected disabled hidden>-- Chọn hương vị --</option>
-                                    @foreach (var item in (SelectList)ViewBag.FlavourId)
-                                    {
-                                            <option value="@item.Value">@item.Text</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Trọng lượng (kg)</label>
-                                <select class="form-select" name="ProductVariants[${variantIndex}].WeightId">
-                                    <option value="" selected disabled hidden>-- Chọn trọng lượng --</option>
-                                    @foreach (var item in (SelectList)ViewBag.WeightId)
-                                    {
-                                            <option value="@item.Value">@item.Text</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="mb-2">
-                                <label class="form-label">Giá biến thể (VNĐ)</label>
-                                <input class="form-control" type="number" placeholder="Để trống nếu dùng giá gốc" name="ProductVariants[${variantIndex}].Price" />
-                            </div>
-                            <div>
-                                <label class="form-label">Số lượng trong kho</label>
-                                <input class="form-control" type="number" placeholder="Số lượng" name="ProductVariants[${variantIndex}].StockQuantity" required />
+                        <!-- Variant -->
+                        <div class="col-12 col-sm-6 col-xl-12">
+                            <div class="pb-4">
+                                <div class="d-flex flex-wrap flex-between-center mb-2">
+                                    <h5 class="text-body-highlight me-2">Biến thể ${currentIndex + 1}</h5>
+                                    <button type="button" class="btn btn-sm btn-phoenix-danger remove-variant-btn">Xóa</button>
+                                </div>
+                                <input type="hidden" name="ProductVariants[${currentIndex}].VariantId" id="ProductVariants_${currentIndex}__VariantId" value="0" />
+                                <div class="mb-2">
+                                    <label class="form-label" for="ProductVariants_${currentIndex}__FlavourId">Hương vị</label>
+                                    <select class="form-select" name="ProductVariants[${currentIndex}].FlavourId" id="ProductVariants_${currentIndex}__FlavourId">
+                                        <option value="">-- Chọn hương vị --</option>
+                                        @foreach (var item in (SelectList)ViewBag.FlavourId)
+                                        {
+                                                <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                    <span class="text-danger field-validation-valid" data-valmsg-for="ProductVariants[${currentIndex}].FlavourId" data-valmsg-replace="true"></span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label" for="ProductVariants_${currentIndex}__WeightId">Trọng lượng (kg)</label>
+                                    <select class="form-select" name="ProductVariants[${currentIndex}].WeightId" id="ProductVariants_${currentIndex}__WeightId">
+                                        <option value="">-- Chọn trọng lượng --</option>
+                                        @foreach (var item in (SelectList)ViewBag.WeightId)
+                                        {
+                                                <option value="@item.Value">@item.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label" for="ProductVariants_${currentIndex}__Price">Giá biến thể (VNĐ)</label>
+                                    <input class="form-control" type="number" placeholder="Để trống nếu dùng giá gốc" name="ProductVariants[${currentIndex}].Price" id="ProductVariants_${currentIndex}__Price" />
+                                    <span class="text-danger field-validation-valid" data-valmsg-for="ProductVariants[${currentIndex}].Price" data-valmsg-replace="true"></span>
+                                </div>
+                                <div>
+                                    <label class="form-label" for="ProductVariants_${currentIndex}__StockQuantity">Số lượng trong kho</label>
+                                    <input class="form-control" type="number" placeholder="Số lượng" name="ProductVariants[${currentIndex}].StockQuantity" id="ProductVariants_${currentIndex}__StockQuantity" required />
+                                    <span class="text-danger field-validation-valid" data-valmsg-for="ProductVariants[${currentIndex}].StockQuantity" data-valmsg-replace="true"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
                 variantsContainer.appendChild(variantDiv);
 
+                const removeButton = variantDiv.querySelector('.remove-variant-btn');
+                if (removeButton) {
+                    removeButton.addEventListener('click', function () {
+                        variantDiv.remove();
+                        updateVariantIndices();
+                    });
+                }
+
                 updateVariantIndices();
-
-                variantIndex = variantsContainer.querySelectorAll('.variant-item').length;
-
-                variantDiv.querySelector('.remove-variant-btn').addEventListener('click', function () {
-                    variantDiv.remove();
-                    updateVariantIndices();
-                });
-
-                variantIndex++;
             });
 
             const dropzoneElement = document.getElementById('product-images-dropzone');
@@ -281,8 +408,11 @@
 
             if (dropzoneElement && hiddenInput && window.Dropzone) {
                 const previewsContainer = dropzoneElement.querySelector('.dz-preview');
-                const previewTemplate = previewsContainer.innerHTML;
-                previewsContainer.innerHTML = '';
+                const previewTemplateElement = previewsContainer.querySelector('[data-dropzone-template]');
+                const previewTemplate = previewTemplateElement ? previewTemplateElement.outerHTML : '';
+                if (previewTemplateElement) {
+                    previewTemplateElement.remove();
+                }
 
                 const dataTransfer = new DataTransfer();
 
@@ -290,7 +420,7 @@
                     url: '#',
                     autoProcessQueue: false,
                     addRemoveLinks: true,
-                    previewsContainer: previewsContainer,
+                    previewsContainer: previewsContainers,
                     previewTemplate: previewTemplate,
                     paramName: 'files'
                 });

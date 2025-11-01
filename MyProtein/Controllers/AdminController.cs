@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyProtein.Helpers;
 using MyProtein.Models;
-using System.Linq;
 
-namespace MyApp.Namespace
+namespace MyProtein.Controllers
 {
     public class AdminController : Controller
     {
@@ -21,7 +20,7 @@ namespace MyApp.Namespace
             return View();
         }
 
-        // GET: AdminController/Products
+        // GET: Admin/Products
         public async Task<IActionResult> Products(string searchTerm, int[] categoryIds, int[] manufacturerIds, int? minPrice, int? maxPrice, int pageNumber = 1, int pageSize = 10)
         {
             // 1. Bắt đầu với một IQueryable
@@ -248,7 +247,7 @@ namespace MyApp.Namespace
             return View(product);
         }
 
-        // GET: Products/Details/5
+        // GET: Products/Details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -267,6 +266,7 @@ namespace MyApp.Namespace
             return View(product);
         }
 
+        // GET: Products/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -286,7 +286,7 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants, List<IFormFile> files)
         {
             ProductVariants ??= new List<ProductVariant>();
 
@@ -346,6 +346,31 @@ namespace MyApp.Namespace
                     }
                 }
 
+                if (files != null && files.Count > 0)
+                {
+                    var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/products");
+                    if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
+
+                    foreach (var file in files)
+                    {
+                        if (file.Length > 0)
+                        {
+                            var newFileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                            var filePath = Path.Combine(uploadPath, newFileName);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+                            _context.ProductImages.Add(new ProductImage
+                            {
+                                ProductId = product.ProductId,
+                                ImageUrl = $"/images/products/{newFileName}",
+                                AltText = product.Name
+                            });
+                        }
+                    }
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Products));
             }
@@ -353,6 +378,20 @@ namespace MyApp.Namespace
             product.ProductVariants = ProductVariants;
             await PopulateSelectListsAsync(product);
             return View(product);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Products));
         }
     }
 }

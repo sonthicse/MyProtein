@@ -516,7 +516,6 @@ C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\stat
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\MyProtein.csproj.Up2Date
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\MyProtein.dll
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\refint\MyProtein.dll
