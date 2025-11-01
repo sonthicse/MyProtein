@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MyProtein.Helpers;
 using MyProtein.Models;
 
 namespace MyApp.Namespace
@@ -33,12 +34,14 @@ namespace MyApp.Namespace
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 var term = searchTerm.ToLower();
+                #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 query = query.Where(p =>
                     p.Name.ToLower().Contains(term) ||
-                    p.Description.ToLower().Contains(term) ||
+                    p.Description.Contains(term, StringComparison.InvariantCultureIgnoreCase) ||
                     (p.Category != null && p.Category.Name.ToLower().Contains(term)) ||
                     (p.Manufacturer != null && p.Manufacturer.Name.ToLower().Contains(term))
                 );
+                #pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
 
             // 3. Áp dụng bộ lọc theo nhiều danh mục
@@ -118,6 +121,9 @@ namespace MyApp.Namespace
 
             if (ModelState.IsValid)
             {
+                // Sử dụng HtmlSanitizer để chuyển đổi mô tả sản phẩm từ HTML sang plain text (vì để không sẽ mất format khi hiển thị)
+                product.Description = HtmlSanitizer.ToPlainText(product.Description);
+
                 // 1. Thêm sản phẩm chính (Product) vào DbContext
                 _context.Add(product);
 
@@ -200,7 +206,7 @@ namespace MyApp.Namespace
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             ViewData["ManufacturerId"] = new SelectList(_context.Manufacturers, "ManufacturerId", "Name", product.ManufacturerId);
             ViewData["FlavourId"] = new SelectList(_context.Flavours, "FlavourId", "FlavourName");
-            ViewData["WeightId"] = new SelectList(_context.Weights.Select(w => new { w.WeightId, Text = $"{w.WeightValue}g ({w.Servings} servings)" }), "WeightId", "Text");
+            ViewData["WeightId"] = new SelectList(_context.Weights.Select(w => new { w.WeightId, Text = $"{w.WeightValue}g ({w.Servings} servings)" }), "WeightId", "WeightValue");
 
             return View(product);
         }

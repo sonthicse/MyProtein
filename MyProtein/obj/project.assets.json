@@ -7602,11 +7602,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\MyProtein.csproj",
+      "projectUniqueName": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\BTL\\MyProtein\\MyProtein.csproj",
       "projectName": "MyProtein",
-      "projectPath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\MyProtein.csproj",
+      "projectPath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\BTL\\MyProtein\\MyProtein.csproj",
       "packagesPath": "C:\\Users\\SONTHI\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\obj\\",
+      "outputPath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\BTL\\MyProtein\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PrFwR2w0qR8=",
+  "dgSpecHash": "yO11Cm9SJvA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\MyProtein.csproj",
+  "projectFilePath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\BTL\\MyProtein\\MyProtein.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SONTHI\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\SONTHI\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
