@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyProtein.Helpers;
 using MyProtein.Models;
+using System.Linq;
 
 namespace MyApp.Namespace
 {
@@ -34,14 +35,12 @@ namespace MyApp.Namespace
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 var term = searchTerm.ToLower();
-                #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 query = query.Where(p =>
                     p.Name.ToLower().Contains(term) ||
-                    p.Description.Contains(term, StringComparison.InvariantCultureIgnoreCase) ||
+                    (p.Description != null && p.Description.ToLower().Contains(term)) ||
                     (p.Category != null && p.Category.Name.ToLower().Contains(term)) ||
                     (p.Manufacturer != null && p.Manufacturer.Name.ToLower().Contains(term))
                 );
-                #pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
 
             // 3. Áp dụng bộ lọc theo nhiều danh mục
@@ -98,13 +97,60 @@ namespace MyApp.Namespace
             return View(productsForPage);
         }
 
-        public IActionResult Create()
+        private async Task PopulateSelectListsAsync(Product? product = null)
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
-            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturers, "ManufacturerId", "Name");
-            ViewData["FlavourId"] = new SelectList(_context.Flavours, "FlavourId", "FlavourName");
-            ViewData["WeightId"] = new SelectList(_context.Weights, "WeightId", "WeightValue");
-            return View();
+            var categories = await _context.Categories
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+            var categorySelect = new SelectList(categories, "CategoryId", "Name", product?.CategoryId);
+            ViewData["CategoryId"] = categorySelect;
+            ViewBag.CategoryId = categorySelect;
+
+            var manufacturers = await _context.Manufacturers
+                .OrderBy(m => m.Name)
+                .ToListAsync();
+            var manufacturerSelect = new SelectList(manufacturers, "ManufacturerId", "Name", product?.ManufacturerId);
+            ViewData["ManufacturerId"] = manufacturerSelect;
+            ViewBag.ManufacturerId = manufacturerSelect;
+
+            var flavourOptions = await _context.Flavours
+                .OrderBy(f => f.FlavourName)
+                .Select(f => new SelectListItem
+                {
+                    Value = f.FlavourId.ToString(),
+                    Text = f.FlavourName
+                })
+                .ToListAsync();
+            var flavourSelect = new SelectList(flavourOptions, "Value", "Text");
+            ViewBag.FlavourId = flavourSelect;
+
+            var weightOptions = await _context.Weights
+                .OrderBy(w => w.WeightValue)
+                .Select(w => new SelectListItem
+                {
+                    Value = w.WeightId.ToString(),
+                    Text = $"{w.WeightValue}g ({w.Servings} servings)"
+                })
+                .ToListAsync();
+            var weightSelect = new SelectList(weightOptions, "Value", "Text");
+            ViewBag.WeightId = weightSelect;
+        }
+
+        private async Task<Product?> GetProductWithDetailsAsync(int id)
+        {
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Manufacturer)
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductVariants)!.ThenInclude(v => v.Flavour)
+                .Include(p => p.ProductVariants)!.ThenInclude(v => v.Weight)
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            await PopulateSelectListsAsync();
+            return View(new Product());
         }
 
         // POST: Admin/Create
@@ -112,12 +158,7 @@ namespace MyApp.Namespace
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants, List<IFormFile> files)
         {
-            // Bỏ qua validation cho các thuộc tính điều hướng để tránh lỗi không cần thiết
-            //ModelState.Remove("Category");
-            //ModelState.Remove("Manufacturer");
-            // Quan trọng: Bỏ qua validation cho chính danh sách ProductVariants,
-            // vì chúng ta sẽ kiểm tra logic của nó thủ công nếu cần.
-            //ModelState.Remove("ProductVariants");
+            ProductVariants ??= new List<ProductVariant>();
 
             if (ModelState.IsValid)
             {
@@ -131,7 +172,7 @@ namespace MyApp.Namespace
                 await _context.SaveChangesAsync();
 
                 // 2. Gán ProductId vừa tạo cho các biến thể và thêm chúng vào DbContext
-                if (ProductVariants != null && ProductVariants.Any())
+                if (ProductVariants.Any())
                 {
                     foreach (var variant in ProductVariants)
                     {
@@ -201,12 +242,8 @@ namespace MyApp.Namespace
                 return RedirectToAction(nameof(Products));
             }
 
-            // Nếu ModelState không hợp lệ (ví dụ: thiếu tên sản phẩm),
-            // tải lại dữ liệu cho các dropdown và hiển thị lại form với các lỗi
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-            ViewData["ManufacturerId"] = new SelectList(_context.Manufacturers, "ManufacturerId", "Name", product.ManufacturerId);
-            ViewData["FlavourId"] = new SelectList(_context.Flavours, "FlavourId", "FlavourName");
-            ViewData["WeightId"] = new SelectList(_context.Weights.Select(w => new { w.WeightId, Text = $"{w.WeightValue}g ({w.Servings} servings)" }), "WeightId", "WeightValue");
+            product.ProductVariants = ProductVariants;
+            await PopulateSelectListsAsync(product);
 
             return View(product);
         }
@@ -219,15 +256,102 @@ namespace MyApp.Namespace
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Manufacturer)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+            var product = await GetProductWithDetailsAsync(id.Value);
+
             if (product == null)
             {
                 return NotFound();
             }
 
+            await PopulateSelectListsAsync(product);
+            return View(product);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = await GetProductWithDetailsAsync(id.Value);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            await PopulateSelectListsAsync(product);
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants)
+        {
+            ProductVariants ??= new List<ProductVariant>();
+
+            if (id != product.ProductId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var existingProduct = await _context.Products
+                    .Include(p => p.ProductVariants)
+                    .FirstOrDefaultAsync(p => p.ProductId == id);
+
+                if (existingProduct == null)
+                {
+                    return NotFound();
+                }
+
+                existingProduct.Sku = product.Sku;
+                existingProduct.Name = product.Name;
+                existingProduct.Description = HtmlSanitizer.ToPlainText(product.Description);
+                existingProduct.Price = product.Price;
+                existingProduct.SalePrice = product.SalePrice;
+                existingProduct.CategoryId = product.CategoryId;
+                existingProduct.ManufacturerId = product.ManufacturerId;
+                existingProduct.Status = product.Status;
+
+                var existingVariants = existingProduct.ProductVariants?.ToList() ?? new List<ProductVariant>();
+                var postedVariantIds = ProductVariants
+                    .Where(v => v.VariantId != 0)
+                    .Select(v => v.VariantId)
+                    .ToHashSet();
+
+                foreach (var variant in existingVariants.Where(v => !postedVariantIds.Contains(v.VariantId)).ToList())
+                {
+                    _context.ProductVariants.Remove(variant);
+                }
+
+                foreach (var variant in ProductVariants)
+                {
+                    if (variant.VariantId == 0)
+                    {
+                        variant.ProductId = existingProduct.ProductId;
+                        _context.ProductVariants.Add(variant);
+                    }
+                    else
+                    {
+                        var existingVariant = existingVariants.FirstOrDefault(v => v.VariantId == variant.VariantId);
+                        if (existingVariant != null)
+                        {
+                            existingVariant.FlavourId = variant.FlavourId;
+                            existingVariant.WeightId = variant.WeightId;
+                            existingVariant.Price = variant.Price;
+                            existingVariant.StockQuantity = variant.StockQuantity;
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Products));
+            }
+
+            product.ProductVariants = ProductVariants;
+            await PopulateSelectListsAsync(product);
             return View(product);
         }
     }

@@ -29,11 +29,11 @@
         <div class="col-12 col-xl-8">
             <!-- Nhập SKU -->
             <h4 class="mb-3">SKU</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write SKU here..." asp-for="Sku"/>
+            <input class="form-control mb-5" type="text" placeholder="Write SKU here..." asp-for="Sku" />
             <span asp-validation-for="Sku" class="text-danger"></span>
             <!-- Nhập Name -->
             <h4 class="mb-3">Tên sản phẩm</h4>
-            <input class="form-control mb-5" type="text" placeholder="Write title here..." asp-for="Name"/>
+            <input class="form-control mb-5" type="text" placeholder="Write title here..." asp-for="Name" />
             <span asp-validation-for="Name" class="text-danger"></span>
             <!-- Nhập Description -->
             <div class="mb-6">
@@ -67,11 +67,11 @@
             <div class="row g-0 border-top border-bottom">
                 <div class="col-sm-4">
                     <div class="nav flex-sm-column border-bottom border-bottom-sm-0 border-end-sm fs-9 vertical-tab h-100 justify-content-between" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active" id="pricingTab" data-bs-toggle="tab" data-bs-target="#pricingTabContent" role="tab" aria-controls="pricingTabContent" aria-selected="true"> 
+                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active" id="pricingTab" data-bs-toggle="tab" data-bs-target="#pricingTabContent" role="tab" aria-controls="pricingTabContent" aria-selected="true">
                             <span class="me-sm-2 fs-4 nav-icons" data-feather="tag"></span>
                             <span class="d-none d-sm-inline">Giá cả</span>
                         </a>
-                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center" id="restockTab" data-bs-toggle="tab" data-bs-target="#restockTabContent" role="tab" aria-controls="restockTabContent" aria-selected="false"> 
+                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center" id="restockTab" data-bs-toggle="tab" data-bs-target="#restockTabContent" role="tab" aria-controls="restockTabContent" aria-selected="false">
                             <span class="me-sm-2 fs-4 nav-icons" data-feather="package"></span>
                             <span class="d-none d-sm-inline">Kho hàng</span>
                         </a>
@@ -84,12 +84,12 @@
                             <div class="row g-3">
                                 <div class="col-12 col-lg-6">
                                     <h5 class="mb-2 text-body-highlight">Giá gốc</h5>
-                                    <input class="form-control" type="number" placeholder="VNĐ" asp-for="Price"/>
+                                    <input class="form-control" type="number" placeholder="VNĐ" asp-for="Price" />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 col-lg-6">
                                     <h5 class="mb-2 text-body-highlight">Giảm giá</h5>
-                                    <input class="form-control" type="number" placeholder="VNĐ" asp-for="SalePrice"/>
+                                    <input class="form-control" type="number" placeholder="VNĐ" asp-for="SalePrice" />
                                     <span asp-validation-for="SalePrice" class="text-danger"></span>
                                 </div>
                             </div>
@@ -199,15 +199,12 @@
             const variantsContainer = document.getElementById('variants-container');
             let variantIndex = 0;
 
-            // Hàm sửa lại thứ tự biến khi xóa biến thể (có vẻ không cần thiết lắm)
             function updateVariantIndices() {
                 const variants = variantsContainer.querySelectorAll('.variant-item');
                 variants.forEach((variant, idx) => {
-                    // Update the header number
                     variant.querySelector('h5').textContent = `Biến thể ${idx + 1}`;
-                    
-                    // Update input names
-                    const inputs = variant.querySelectorAll('select, input');
+
+                    const inputs = variant.querySelectorAll('select, input, textarea');
                     inputs.forEach(input => {
                         const name = input.getAttribute('name');
                         if (name) {
@@ -215,13 +212,15 @@
                         }
                     });
                 });
+                variantIndex = variants.length;
             }
 
             addVariantBtn.addEventListener('click', function () {
+                variantIndex = variantsContainer.querySelectorAll('.variant-item').length;
+
                 const variantDiv = document.createElement('div');
                 variantDiv.className = 'variant-item border-bottom pb-4 mb-4';
 
-                // Rest of your existing HTML template
                 variantDiv.innerHTML = `
                     <!-- Variant -->
                     <div class="col-12 col-sm-6 col-xl-12">
@@ -230,23 +229,24 @@
                                 <h5 class="text-body-highlight me-2">Biến thể ${variantIndex + 1}</h5>
                                 <button type="button" class="btn btn-sm btn-phoenix-danger remove-variant-btn">Xóa</button>
                             </div>
+                            <input type="hidden" name="ProductVariants[${variantIndex}].VariantId" value="0" />
                             <div class="mb-2">
                                 <label class="form-label">Hương vị</label>
                                 <select class="form-select" name="ProductVariants[${variantIndex}].FlavourId">
-                                    <option value="" selected disable hidden>-- Chọn hương vị --</option>
+                                    <option value="" selected disabled hidden>-- Chọn hương vị --</option>
                                     @foreach (var item in (SelectList)ViewBag.FlavourId)
                                     {
-                                            <option value="@item.Value">@item.Text</option>
+                                        <option value="@item.Value">@item.Text</option>
                                     }
                                 </select>
                             </div>
                             <div class="mb-2">
                                 <label class="form-label">Trọng lượng (kg)</label>
                                 <select class="form-select" name="ProductVariants[${variantIndex}].WeightId">
-                                    <option value="" selected disable hidden>-- Chọn trọng lượng --</option>
+                                    <option value="" selected disabled hidden>-- Chọn trọng lượng --</option>
                                     @foreach (var item in (SelectList)ViewBag.WeightId)
                                     {
-                                            <option value="@item.Value">@item.Text</option>
+                                        <option value="@item.Value">@item.Text</option>
                                     }
                                 </select>
                             </div>
@@ -264,10 +264,13 @@
 
                 variantsContainer.appendChild(variantDiv);
 
-                // Add remove event listener
-                variantDiv.querySelector('.remove-variant-btn').addEventListener('click', function() {
+                updateVariantIndices();
+
+                variantIndex = variantsContainer.querySelectorAll('.variant-item').length;
+
+                variantDiv.querySelector('.remove-variant-btn').addEventListener('click', function () {
                     variantDiv.remove();
-                    updateVariantIndices(); // Update indices after removal
+                    updateVariantIndices();
                 });
 
                 variantIndex++;
