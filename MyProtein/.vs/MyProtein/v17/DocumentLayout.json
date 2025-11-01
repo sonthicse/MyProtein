@@ -1,0 +1,69 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8B95230F-C48E-4DB2-B8DE-4D8C2AFE881D}|MyProtein.csproj|c:\\users\\sonthi\\onedrive\\anhttt59(clc)\\cnweb\\myprotein\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8B95230F-C48E-4DB2-B8DE-4D8C2AFE881D}|MyProtein.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B95230F-C48E-4DB2-B8DE-4D8C2AFE881D}|MyProtein.csproj|c:\\users\\sonthi\\onedrive\\anhttt59(clc)\\cnweb\\myprotein\\views\\admin\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8B95230F-C48E-4DB2-B8DE-4D8C2AFE881D}|MyProtein.csproj|solutionrelative:views\\admin\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8B95230F-C48E-4DB2-B8DE-4D8C2AFE881D}|MyProtein.csproj|c:\\users\\sonthi\\onedrive\\anhttt59(clc)\\cnweb\\myprotein\\views\\admin\\products.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8B95230F-C48E-4DB2-B8DE-4D8C2AFE881D}|MyProtein.csproj|solutionrelative:views\\admin\\products.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Controllers\\AdminController.cs",
+              "ViewState": "AgIAAG0AAAAAAAAAAAA3wJYAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-31T12:53:37.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\Views\\Admin\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\Create.cshtml",
+              "ToolTip": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\Views\\Admin\\Create.cshtml",
+              "RelativeToolTip": "Views\\Admin\\Create.cshtml",
+              "ViewState": "AgIAACUAAAAAAAAAAAAAAC4AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-31T12:31:41.484Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Products.cshtml",
+              "DocumentMoniker": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\Views\\Admin\\Products.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\Products.cshtml",
+              "ToolTip": "C:\\Users\\SONTHI\\OneDrive\\ANHTTT59(CLC)\\CNWeb\\MyProtein\\Views\\Admin\\Products.cshtml",
+              "RelativeToolTip": "Views\\Admin\\Products.cshtml",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAQwGkAAABWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-31T12:29:58.97Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
