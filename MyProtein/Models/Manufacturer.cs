@@ -11,7 +11,5 @@ public partial class Manufacturer
 
     public string? Country { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
-
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

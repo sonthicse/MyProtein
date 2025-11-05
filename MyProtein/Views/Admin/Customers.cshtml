@@ -1,0 +1,142 @@
+﻿@model IEnumerable<MyProtein.Models.User>
+
+@{
+    ViewData["Title"] = "Danh sách khách hàng";
+    Layout = "AdminLayout";
+}
+
+<div class="mb-9">
+    <div class="row g-2 mb-4">
+        <div class="col-auto">
+            <h2 class="mb-0">@ViewData[index: "Title"]</h2>
+        </div>
+    </div>
+    <form method="get" asp-action="Customers" asp-asp-controller="Admin">
+        <div class="mb-4">
+            <div class="row g-3">
+                <div class="col-auto">
+                    <!-- Search Box -->
+                    <div class="search-box">
+                        <input class="form-control search-input search" type="search" name="searchTerm" placeholder="Tìm kiếm" aria-label="Search" value="@ViewBag.SearchTerm" />
+                        <span class="fas fa-search search-box-icon"></span>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <!-- Price Filter -->
+                    <div class="d-flex gap-2">
+                        <input class="form-control" type="number" name="minPrice" placeholder="Giá từ" value="@ViewBag.MinPrice" style="width: 150px;" />
+                        <input class="form-control" type="number" name="maxPrice" placeholder="Giá đến" value="@ViewBag.MaxPrice" style="width: 150px;" />
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <!-- Nút bấm -->
+                    <button class="btn btn-primary" type="submit">Lọc</button>
+                    <a class="btn btn-phoenix-secondary" asp-action="Customers">Xóa lọc</a>
+                </div>
+            </div>
+        </div>
+        <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+            <div class="table-responsive scrollbar-overlay mx-n1 px-1">
+                <table class="table fs-9 mb-0">
+                    <thead>
+                        <tr>
+                            <th class="align-middle white-space-nowrap ps-4" scope="col" style="width:16%;">USERNAME</th>
+                            <th class="align-middle white-space-nowrap ps-4" scope="col" style="width:18%;">HỌ TÊN</th>
+                            <th class="align-middle white-space-nowrap ps-4" scope="col" style="width:16%;">EMAIL</th>
+                            <th class="align-middle white-space-nowrap ps-4 text-end" scope="col" style="width:10%">ĐƠN HÀNG</th>
+                            <th class="align-middle white-space-nowrap ps-4 text-end" scope="col" style="width:10%">TỔNG CHI TIÊU (VNĐ)</th>
+                            <th class="align-middle white-space-nowrap ps-4 text-end" scope="col" style="width:10%;">ĐÁNH GIÁ</th>
+                            <th class="align-middle white-space-nowrap ps-4 text-end" scope="col" style="width:10%;">NGÀY TẠO</th>
+                            <th class="align-middle white-space-nowrap ps-4 text-end" scope="col" style="width:10%;">ONLINE GẦN NHẤT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var customer in Model)
+                        {
+                            <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                <td class="align-middle white-space-nowrap ps-4 fs-9">
+                                    <a class="d-flex align-items-center text-body-emphasis" asp-controller="Admin" asp-action="DetailsCustomer" asp-route-id="@customer.UserId">
+                                        <p class="mb-0 text-body-emphasis fw-bold">@customer.Username</p>
+                                    </a>
+                                </td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9">
+                                    <a class="d-flex align-items-center text-body-emphasis" asp-controller="Admin" asp-action="DetailsCustomer" asp-route-id="@customer.UserId">
+                                        <div class="avatar avatar-m">
+                                            <img class="rounded-circle" src="~/phoenix/assets/img/icons/logo.png" alt="" />
+                                        </div>
+                                        <p class="mb-0 ms-3 text-body-emphasis fw-bold">@customer.FullName</p>
+                                    </a>
+                                </td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9">
+                                    <a class="fw-semibold" href="mailto:@customer.Email">@customer.Email</a>
+                                </td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9 fw-semibold text-end text-body-highlight">@customer.Orders.Count()</td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9 fw-bold text-end text-body-emphasis">@customer.Orders.Sum(order => order.OrderItems.Sum(item => (item.Variant.Price ?? 0) * item.Quantity))</td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9 fw-semibold text-end text-body-highlight">@customer.Reviews.Count()</td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9 text-body-tertiary text-end">@customer.CreatedAt</td>
+                                <td class="align-middle white-space-nowrap ps-4 fs-9 text-body-tertiary text-end">@customer.UpdatedAt</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @{
+                int totalPages = ViewBag.TotalPages;
+                int currentPage = ViewBag.PageNumber;
+                int totalItems = ViewBag.TotalItems;
+
+                int startItem = (currentPage - 1) * (ViewBag.PageSize) + 1;
+                int endItem = Math.Min(currentPage * (ViewBag.PageSize), totalItems);
+            }
+
+            <!-- Chỗ này phân trang phức tạp không được bấm linh tinh -->
+            @if (totalPages > 1)
+            {
+                <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+                    <div class="col-auto d-flex">
+                        <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body">
+                            Hiển thị @startItem - @endItem <span class="text-body-tertiary"> trên tổng </span> @totalItems
+                        </p>
+                    </div>
+                    <div class="col-auto d-flex">
+                        @{
+                            // Bắt đầu xây dựng chuỗi query string
+                            var queryBuilder = new System.Text.StringBuilder();
+
+                            // Thêm các tham số đơn giản
+                            if (ViewBag.SearchTerm != null)
+                            {
+                                queryBuilder.Append($"&searchTerm={System.Net.WebUtility.UrlEncode(ViewBag.SearchTerm)}");
+                            }
+                            if (ViewBag.MinPrice != null) { queryBuilder.Append($"&minPrice={ViewBag.MinPrice}"); }
+                            if (ViewBag.MaxPrice != null) { queryBuilder.Append($"&maxPrice={ViewBag.MaxPrice}"); }
+
+                            string filterQuery = queryBuilder.ToString();
+                        }
+
+                        <!-- Nút Previous -->
+                        <a class="page-link @(currentPage == 1 ? "disabled" : "")" href="@Url.Action("Customers", "Admin", new { pageNumber = currentPage - 1 })@filterQuery">
+                            <span class="fas fa-chevron-left"></span>
+                        </a>
+
+                        <!-- Các nút số trang -->
+                        <ul class="mb-0 pagination">
+                            @for (int i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link"
+                                       href="@Url.Action("Customers", "Admin", new { pageNumber = i })@filterQuery">@i</a>
+                                </li>
+                            }
+                        </ul>
+
+                        <!-- Nút Next -->
+                        <a class="page-link pe-0 @(currentPage == totalPages ? "disabled" : "")" href="@Url.Action("Customers", "Admin", new { pageNumber = currentPage + 1 })@filterQuery">
+                            <span class="fas fa-chevron-right"></span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </form>
+</div>

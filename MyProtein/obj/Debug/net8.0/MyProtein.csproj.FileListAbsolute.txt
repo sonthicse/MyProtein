@@ -522,3 +522,4 @@ C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\refi
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\MyProtein.pdb
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\MyProtein.genruntimeconfig.cache
 C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\ref\MyProtein.dll
+C:\Users\SONTHI\OneDrive\ANHTTT59(CLC)\CNWeb\BTL\MyProtein\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -13,27 +13,27 @@ public partial class Order
 
     public string Status { get; set; } = null!;
 
-    public decimal TotalAmount { get; set; }
-
-    public int ShippingAddressId { get; set; }
+    public int AddressId { get; set; }
 
     public int PaymentMethodId { get; set; }
 
-    public int ShippingMethodId { get; set; }
+    public int DeliveryTypeId { get; set; }
+
+    public decimal? Tax { get; set; }
 
     public string? Notes { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+
+    public virtual Address Address { get; set; } = null!;
+
+    public virtual DeliveryType DeliveryType { get; set; } = null!;
 
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
 
     public virtual ICollection<Refund> Refunds { get; set; } = new List<Refund>();
-
-    public virtual Address ShippingAddress { get; set; } = null!;
-
-    public virtual ShippingMethod ShippingMethod { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

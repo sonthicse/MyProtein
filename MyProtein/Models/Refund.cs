@@ -15,7 +15,5 @@ public partial class Refund
 
     public DateTime? CreatedAt { get; set; }
 
-    public DateTime? ProcessedAt { get; set; }
-
     public virtual Order Order { get; set; } = null!;
 }

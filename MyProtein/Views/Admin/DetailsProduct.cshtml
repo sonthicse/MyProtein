@@ -1,0 +1,199 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "AdminLayout";
+    var variants = Model.ProductVariants;
+}
+
+@model MyProtein.Models.Product
+@* @using System.Linq
+@using Microsoft.EntityFrameworkCore.Metadata.Internal *@
+
+<div class="mb-9">
+    <div class="row g-3 flex-between-end mb-5">
+        <div class="col-auto">
+            <h2 class="mb-2">@ViewData["Title"]</h2>
+            <h5 class="text-body-tertiary fw-semibold">Thông tin sản phẩm hiện tại</h5>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-phoenix-secondary me-2 mb-2 mb-sm-0" asp-action="Products">Quay lại</a>
+            <a class="btn btn-primary mb-2 mb-sm-0" asp-action="Edit" asp-route-id="@Model.ProductId">Chỉnh sửa</a>
+        </div>
+    </div>
+    <div class="row g-5">
+        <div class="col-12 col-xl-8">
+            <!-- Nhập SKU -->
+            <h4 class="mb-3">SKU</h4>
+            <input class="form-control form-control-lg mb-5" type="text" asp-for="Sku" readonly />
+            <span asp-validation-for="Sku" class="text-danger"></span>
+            <!-- Nhập Name -->
+            <h4 class="mb-3">Tên sản phẩm</h4>
+            <input class="form-control form-control-lg mb-5" type="text" asp-for="Name" readonly />
+            <span asp-validation-for="Name" class="text-danger"></span>
+            <!-- Nhập Description -->
+            <div class="mb-6">
+                <h4 class="mb-3">Mô tả</h4>
+                <textarea class="form-control form-control-lg mb-5" asp-for="Description" readonly rows="6"></textarea>
+            </div>
+            <!-- Nhập hình ảnh -->
+            <h4 class="mb-3">Hình ảnh</h4>
+            <div class="d-flex flex-wrap gap-2 mb-5">
+                @if (Model.ProductImages != null && Model.ProductImages.Any())
+                {
+                    foreach (var image in Model.ProductImages)
+                    {
+                        <div class="border border-translucent bg-body-emphasis rounded-3 d-flex flex-center" style="height:80px;width:80px;">
+                            <img class="img-fluid" src="@image.ImageUrl" alt="@image.AltText" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    <span class="text-body-secondary">Không có hình ảnh cho sản phẩm này.</span>
+                }
+            </div>
+            <h4 class="mb-3">Inventory</h4>
+            <div class="row g-0 border-top border-bottom">
+                <div class="col-sm-4">
+                    <div class="nav flex-sm-column border-bottom border-bottom-sm-0 border-end-sm fs-9 vertical-tab h-100 justify-content-between" role="tablist" aria-orientation="vertical">
+                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active" id="pricingTab" data-bs-toggle="tab" data-bs-target="#pricingTabContent" role="tab" aria-controls="pricingTabContent" aria-selected="true">
+                            <span class="me-sm-2 fs-4 nav-icons" data-feather="tag"></span>
+                            <span class="d-none d-sm-inline">Giá cả</span>
+                        </a>
+                        <a class="nav-link border-end border-end-sm-0 border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center" id="restockTab" data-bs-toggle="tab" data-bs-target="#restockTabContent" role="tab" aria-controls="restockTabContent" aria-selected="false">
+                            <span class="me-sm-2 fs-4 nav-icons" data-feather="package"></span>
+                            <span class="d-none d-sm-inline">Kho hàng</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="tab-content py-3 ps-sm-4 h-100">
+                        <div class="tab-pane fade show active" id="pricingTabContent" role="tabpanel">
+                            <h4 class="mb-3 d-sm-none">Pricing</h4>
+                            <div class="row g-3">
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-2 text-body-highlight">Giá gốc (VNĐ)</h5>
+                                    <input class="form-control form-control-lg" type="number" asp-for="Price" readonly />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <h5 class="mb-2 text-body-highlight">Giảm giá (VNĐ)</h5>
+                                    <input class="form-control form-control-lg" type="number" asp-for="SalePrice" readonly />
+                                    <span asp-validation-for="SalePrice" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Thông tin kho hàng -->
+                        <div class="tab-pane fade h-100" id="restockTabContent" role="tabpanel" aria-labelledby="restockTab">
+                            <div class="d-flex flex-column h-100">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 300px;"></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-body-highlight fw-bold py-1">Tổng sản phẩm trong kho:</td>
+                                            <td class="text-body-tertiary fw-semibold py-1">@variants?.Sum(v => v.StockQuantity)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-body-highlight fw-bold py-1">Tổng sản phẩm trong suốt quá trình:</td>
+                                            <td class="text-body-tertiary fw-semibold py-1">20,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4">
+            <div class="row g-2">
+                <div class="col-12 col-xl-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Chi tiết</h4>
+                            <div class="row gx-3">
+                                <!-- Chọn Category -->
+                                <div class="col-12 col-sm-6 col-xl-12">
+                                    <div class="mb-4">
+                                        <div class="d-flex flex-wrap flex-between-center mb-2">
+                                            <h5 class="mb-0 text-body-highlight me-2">Danh mục</h5>
+                                        </div>
+                                        <input class="form-select mb-3" aria-label="category" asp-for="CategoryId" asp-items="ViewBag.CategoryId" readonly />
+                                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <!-- Chọn Manufacturer -->
+                                <div class="col-12 col-sm-6 col-xl-12">
+                                    <div class="mb-4">
+                                        <div class="d-flex flex-wrap flex-between-center mb-2">
+                                            <h5 class="mb-0 text-body-highlight me-2">Nhà sản xuất</h5>
+                                        </div>
+                                        <input class="form-select mb-3" aria-label="manufacturer" asp-for="ManufacturerId" asp-items="ViewBag.ManufacturerId" readonly />
+                                        <span asp-validation-for="ManufacturerId" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <!-- Chọn Status -->
+                                <div class="col-12 col-sm-6 col-xl-12">
+                                    <div class="d-flex flex-wrap flex-between-center mb-2">
+                                        <h5 class="mb-0 text-body-highlight me-2">Trạng thái</h5>
+                                    </div>
+                                    <input class="form-select mb-3" aria-label="category" value="@(Model.Status == true ? "Active" : "Inactive")" readonly />
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Tạo các ProductVariant -->
+                            <h4 class="card-title mb-4">Biến thể</h4>
+                            <div id="variants-container" class="row g-3">
+                                @if (variants != null && variants.Any())
+                                {
+                                    var index = 1;
+                                    foreach (var variant in variants)
+                                    {
+                                        <div class="col-12 col-sm-6 col-xl-12 variant-item border-bottom pb-4 mb-4">
+                                            <div class="d-flex flex-wrap flex-between-center mb-2">
+                                                <h5 class="text-body-highlight me-2">Biến thể @index</h5>
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Hương vị</label>
+                                                <input class="form-select mb-3" type="text" value="@variant.Flavour?.FlavourName" readonly />
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Trọng lượng (kg)</label>
+                                                <input class="form-select mb-3" type="text" value="@(variant.Weight?.WeightValue.ToString("0.##"))" readonly />
+                                            </div>
+                                            <div class="mb-2">
+                                                <label class="form-label">Giá biến thể (VNĐ)</label>
+                                                <input class="form-control mb-3" type="number" value="@(variant.Price?.ToString() ?? string.Empty)" readonly />
+                                            </div>
+                                            <div>
+                                                <label class="form-label">Số lượng trong kho</label>
+                                                <input class="form-control mb-3" type="number" value="@variant.StockQuantity" readonly />
+                                            </div>
+                                        </div>
+                                        index++;
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-12">
+                                        <span class="text-body-secondary">Không có biến thể cho sản phẩm này.</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -28,20 +28,36 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlLmNzaHRtbA==
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/CreateProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlUHJvZHVjdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGV0YWlscy5jc2h0bWw=
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Customers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3VzdG9tZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdC5jc2h0bWw=
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/DetailsCustomer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGV0YWlsc0N1c3RvbWVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/DetailsOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGV0YWlsc09yZGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/DetailsProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGV0YWlsc1Byb2R1Y3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/EditProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFByb2R1Y3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Orders.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cT3JkZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Admin/Products.cshtml]
@@ -54,46 +70,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Orders/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXENyZWF0ZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Orders/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXERlbGV0ZS5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Orders/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXERldGFpbHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Orders/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXEVkaXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Orders/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJzXEluZGV4LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Products/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcQ3JlYXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Products/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRGVsZXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Products/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Products/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRWRpdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Products/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/SONTHI/OneDrive/ANHTTT59(CLC)/CNWeb/BTL/MyProtein/Views/Shared/AdminLayout.cshtml]

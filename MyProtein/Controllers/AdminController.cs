@@ -138,15 +138,15 @@ namespace MyProtein.Controllers
         private async Task<Product?> GetProductWithDetailsAsync(int id)
         {
             return await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Manufacturer)
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductVariants)!.ThenInclude(v => v.Flavour)
-                .Include(p => p.ProductVariants)!.ThenInclude(v => v.Weight)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+                                    .Include(p => p.Category)
+                                    .Include(p => p.Manufacturer)
+                                    .Include(p => p.ProductImages)
+                                    .Include(p => p.ProductVariants)!.ThenInclude(v => v.Flavour)
+                                    .Include(p => p.ProductVariants)!.ThenInclude(v => v.Weight)
+                                    .FirstOrDefaultAsync(m => m.ProductId == id);
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateProduct()
         {
             await PopulateSelectListsAsync();
             return View(new Product());
@@ -155,7 +155,7 @@ namespace MyProtein.Controllers
         // POST: Admin/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants, List<IFormFile> files)
+        public async Task<IActionResult> CreateProduct([Bind("Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants, List<IFormFile> files)
         {
             ProductVariants ??= new List<ProductVariant>();
 
@@ -248,7 +248,7 @@ namespace MyProtein.Controllers
         }
 
         // GET: Products/Details
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> DetailsProduct(int? id)
         {
             if (id == null)
             {
@@ -267,7 +267,7 @@ namespace MyProtein.Controllers
         }
 
         // GET: Products/Edit
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditProduct(int? id)
         {
             if (id == null)
             {
@@ -286,7 +286,7 @@ namespace MyProtein.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants, List<IFormFile> files)
+        public async Task<IActionResult> EditProduct(int id, [Bind("ProductId,Sku,Name,Description,Price,SalePrice,CategoryId,ManufacturerId,Status")] Product product, List<ProductVariant> ProductVariants, List<IFormFile> files)
         {
             ProductVariants ??= new List<ProductVariant>();
 
@@ -380,9 +380,9 @@ namespace MyProtein.Controllers
             return View(product);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("DeleteProduct")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product != null)
@@ -392,6 +392,137 @@ namespace MyProtein.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Products));
+        }
+
+        // GET: Admin/Customers
+        [HttpGet]
+        public async Task<IActionResult> Customers(string? searchTerm, string? username, string? fullName, string? email, string? phone, int? minPrice, int? maxPrice, int pageNumber = 1, int pageSize = 10) {
+            // 1. Bắt đầu với một IQueryable
+            var query = _context.Users
+                            .Include(c => c.Orders)!.ThenInclude(c => c.OrderItems)
+                            .Include(c => c.Reviews)
+                            .OrderByDescending(c => c.CreatedAt)
+                            .AsQueryable();
+            // 2. Áp dụng bộ lọc tìm kiếm (Search Term)
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var term = searchTerm.ToLower();
+                query = query.Where(c =>
+                    c.Username.ToLower().Contains(term) ||
+                    c.FullName.ToLower().Contains(term) ||
+                    c.Email.ToLower().Contains(term) ||
+                    (c.Phone != null && c.Phone.ToLower().Contains(term))
+                );
+            }
+
+            // 3. Áp dụng bộ lọc theo khoảng giá
+            if (minPrice.HasValue)
+            {
+                query = query.Where(t => t.Orders.Sum(order => order.OrderItems.Sum(item => (item.Variant.Price ?? 0) * item.Quantity)) >= minPrice.Value);
+            }
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(t => t.Orders.Sum(order => order.OrderItems.Sum(item => (item.Variant.Price ?? 0) * item.Quantity)) <= maxPrice.Value);
+            }
+
+            // --- Bắt đầu phân trang trên kết quả đã lọc ---
+            var totalItems = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageNumber > totalPages && totalPages > 0) pageNumber = totalPages;
+
+            var customersForPage = await query
+                                        .Skip((pageNumber - 1) * pageSize)
+                                        .Take(pageSize)
+                                        .ToListAsync();
+            // --- Kết thúc phân trang ---
+
+            // 4. Gửi dữ liệu và các tham số lọc tới View bằng ViewBag
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+
+            // Giữ lại giá trị các bộ lọc để hiển thị lại trên form
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+
+            return View(customersForPage);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DetailsCustomer(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Users
+                                    .Include(c => c.Orders)!.ThenInclude(o => o.OrderItems)
+                                    .Include(c => c.Wishlist)!.ThenInclude(w => w.WishlistItems)
+                                    .Include(c => c.Reviews)
+                                    .FirstOrDefaultAsync(c => c.UserId == id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Orders()
+        {
+            var orders = _context.Orders
+                                    .Include(o => o.PaymentMethod)
+                                    .Include(o => o.Address)
+                                    .Include(o => o.DeliveryType)
+                                    .Include(o => o.User);
+            return View(await orders.ToListAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DetailsOrder(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _context.Orders
+                                        .Include(o => o.PaymentMethod)
+                                        .Include(o => o.Address)
+                                        .Include(o => o.DeliveryType)
+                                        .Include(o => o.User)
+                                        .Include(o => o.OrderItems)
+                                        .FirstOrDefaultAsync(m => m.OrderId == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return View(order);
+        }
+
+        [HttpGet]
+        public IActionResult Reviews()
+        {
+            var reviews = _context.Reviews
+                                    .Include(r => r.User)
+                                    .Include(r => r.Product)
+                                    .OrderByDescending(r => r.CreatedAt);
+            return View(reviews.ToList());
+        }
+
+        [HttpGet]
+        public IActionResult Refunds() {
+            var refunds = _context.Refunds
+                                    .Include(r => r.Order)!.ThenInclude(o => o.OrderItems)
+                                    .OrderByDescending(r => r.CreatedAt);
+            return View(refunds.ToList());
         }
     }
 }

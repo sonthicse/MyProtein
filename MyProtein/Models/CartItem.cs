@@ -13,8 +13,6 @@ public partial class CartItem
 
     public int Quantity { get; set; }
 
-    public int UnitPrice { get; set; }
-
     public virtual Cart Cart { get; set; } = null!;
 
     public virtual ProductVariant Variant { get; set; } = null!;

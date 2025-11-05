@@ -11,13 +11,11 @@ public partial class Address
 
     public string FullName { get; set; } = null!;
 
-    public string AddressLine { get; set; } = null!;
+    public string Address1 { get; set; } = null!;
 
     public string? City { get; set; }
 
-    public string? StateProvince { get; set; }
-
-    public string? PostalCode { get; set; }
+    public string? Province { get; set; }
 
     public string Phone { get; set; } = null!;
 

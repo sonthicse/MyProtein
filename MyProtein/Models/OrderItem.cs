@@ -13,10 +13,6 @@ public partial class OrderItem
 
     public int Quantity { get; set; }
 
-    public int UnitPrice { get; set; }
-
-    public int? TotalPrice { get; set; }
-
     public virtual Order Order { get; set; } = null!;
 
     public virtual ProductVariant Variant { get; set; } = null!;
